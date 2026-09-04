@@ -16,6 +16,15 @@ public class UserController : Controller
         _signInManager = signInManager;
     }
 
+    public IActionResult LoginPage()
+    {
+        return View("Login");
+    }
+    public IActionResult RegisterPage()
+    {
+        return View("Register");
+    }
+
     public async Task<IActionResult> Login(LoginModel model)
     {
         if (!ModelState.IsValid)
