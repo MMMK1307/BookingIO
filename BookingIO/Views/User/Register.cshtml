@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["Title"] = "Cadastro";
+}
+
+<div class="card">
+    <div class="card-content">
+
+        <span class="card-title center-align">
+            Criar Conta
+        </span>
+
+        <form method="post" id="cadastroForm">
+
+            <!-- Nome -->
+            <div class="input-field">
+                <input id="nome"
+                       name="nome"
+                       type="text"
+                       maxlength="255"
+                       required />
+
+                <label for="nome">Nome</label>
+            </div>
+
+            <!-- Login -->
+            <div class="input-field">
+                <input id="login"
+                       name="login"
+                       type="text"
+                       maxlength="100"
+                       required />
+
+                <label for="login">Login</label>
+            </div>
+
+            <!-- E-mail -->
+            <div class="input-field">
+                <input id="email"
+                       name="email"
+                       type="email"
+                       maxlength="255"
+                       required />
+
+                <label for="email">E-mail</label>
+            </div>
+
+            <!-- Senha -->
+            <div class="input-field">
+                <input id="senha"
+                       name="senha"
+                       type="password"
+                       maxlength="255"
+                       required />
+
+                <label for="senha">Senha</label>
+            </div>
+
+            <!-- Confirmar senha -->
+            <div class="input-field">
+                <input id="confirmarSenha"
+                       name="confirmarSenha"
+                       type="password"
+                       maxlength="255"
+                       required />
+
+                <label for="confirmarSenha">
+                    Confirmar Senha
+                </label>
+
+                <span id="erroSenha"
+                      class="helper-text red-text"
+                      style="display: none;">
+                    As senhas não coincidem.
+                </span>
+            </div>
+
+            <!-- Botão -->
+            <div class="center-align">
+                <button class="btn waves-effect waves-light"
+                        type="submit">
+                    Cadastrar
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+</div>
+
+<script>
+    const senha = document.getElementById("senha");
+    const confirmarSenha = document.getElementById("confirmarSenha");
+    const erroSenha = document.getElementById("erroSenha");
+    const form = document.getElementById("cadastroForm");
+
+    function validarSenhas() {
+        if (confirmarSenha.value === "") {
+            erroSenha.style.display = "none";
+            confirmarSenha.classList.remove("invalid");
+            confirmarSenha.classList.remove("valid");
+            return;
+        }
+
+        if (senha.value !== confirmarSenha.value) {
+            erroSenha.style.display = "block";
+            confirmarSenha.classList.add("invalid");
+            confirmarSenha.classList.remove("valid");
+        } else {
+            erroSenha.style.display = "none";
+            confirmarSenha.classList.remove("invalid");
+            confirmarSenha.classList.add("valid");
+        }
+    }
+
+    senha.addEventListener("input", validarSenhas);
+    confirmarSenha.addEventListener("input", validarSenhas);
+
+    form.addEventListener("submit", function (event) {
+        validarSenhas();
+
+        if (senha.value !== confirmarSenha.value) {
+            event.preventDefault();
+        }
+    });
+</script>

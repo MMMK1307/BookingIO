@@ -4,7 +4,6 @@ namespace BookingIO.Models
 {
     public class User : IdentityUser<Guid>
     {
-         public DateTime RegisteredAt { get; init; } = DateTime.UtcNow;
-
+        public DateTime RegisteredAt { get; init; } = DateTime.UtcNow;
     }
 }
