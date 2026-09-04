@@ -1,7 +1,275 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "BookingIO";
 }
 
+<section class="hero">
+<div class="container hero-grid">
 <div>
-    <h1>Booking.IO</h1>
+<div class="eyebrow"><span></span> Gestão inteligente de espaços</div>
+<h1>Organize seus espaços.<br/><em>Simplifique</em> suas reservas.</h1>
+<p class="hero-copy">
+            O BookingIO centraliza a reserva e o gerenciamento de espaços,
+            evitando conflitos de horários e tornando a organização simples para todos.
+          </p>
+<div class="hero-actions">
+<a class="btn btn-primary" href="#solucao">Conhecer o BookingIO <span>→</span></a>
+<a class="btn btn-secondary" href="#como-funciona">Como funciona</a>
 </div>
+</div>
+<div class="mockup-wrap">
+<div class="app-window">
+<div class="app-top">
+<div class="dots"><i></i><i></i><i></i></div>
+<div class="app-title">BOOKINGIO / DASHBOARD</div>
+<div class="profile"></div>
+</div>
+<div class="app-body">
+<aside class="sidebar">
+<div class="side-logo">BookingIO</div>
+<div class="side-item active"><span class="side-icon"></span> Dashboard</div>
+<div class="side-item"><span class="side-icon"></span> Reservas</div>
+<div class="side-item"><span class="side-icon"></span> Espaços</div>
+<div class="side-item"><span class="side-icon"></span> Usuários</div>
+<div class="side-item"><span class="side-icon"></span> Grupos</div>
+</aside>
+<div class="dashboard">
+<div class="dash-head">
+<h3>Visão geral</h3>
+<div class="mini-btn">+ Nova reserva</div>
+</div>
+<div class="stats">
+<div class="stat"><small>RESERVAS HOJE</small><strong>24</strong></div>
+<div class="stat"><small>ESPAÇOS ATIVOS</small><strong>18</strong></div>
+<div class="stat"><small>OCUPAÇÃO</small><strong>74%</strong></div>
+</div>
+<div class="calendar-card">
+<div class="calendar-head">
+<strong>Agenda de espaços</strong>
+<span>Setembro, 2026</span>
+</div>
+<div class="calendar-grid">
+<div class="calendar-cell"><small>SEG</small><div class="booking">Sala 01</div></div>
+<div class="calendar-cell"><small>TER</small><div class="booking green">Lab 02</div></div>
+<div class="calendar-cell"><small>QUA</small><div class="booking">Auditório</div></div>
+<div class="calendar-cell"><small>QUI</small><div class="booking green">Sala 03</div></div>
+<div class="calendar-cell"><small>SEX</small><div class="booking">Sala 01</div></div>
+<div class="calendar-cell"><small>09:00</small></div>
+<div class="calendar-cell"><small>10:00</small><div class="booking green">Lab 02</div></div>
+<div class="calendar-cell"><small>11:00</small></div>
+<div class="calendar-cell"><small>12:00</small><div class="booking">Sala 03</div></div>
+<div class="calendar-cell"><small>13:00</small></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="floating one">
+<div class="float-icon">✓</div>
+<div><strong>Reserva confirmada</strong><span>Sala 03 · 14:00–16:00</span></div>
+</div>
+<div class="floating two">
+<div class="float-icon">⌁</div>
+<div><strong>Espaço disponível</strong><span>Laboratório 02</span></div>
+</div>
+</div>
+</div>
+</section>
+<div class="trust">
+<div class="container trust-inner">
+<span>Feito para ambientes que precisam de <strong>organização</strong></span>
+<span>Escolas</span>
+<span>Faculdades</span>
+<span>Empresas</span>
+<span>Instituições</span>
+</div>
+</div>
+<section class="problem">
+<div class="container problem-grid">
+<div class="chaos-card">
+<h3>Quando não existe controle...</h3>
+<div class="mess-list">
+<div class="mess"><b>×</b> Duas pessoas reservam o mesmo espaço</div>
+<div class="mess"><b>×</b> Ninguém sabe o que está disponível</div>
+<div class="mess"><b>×</b> Informações ficam espalhadas</div>
+<div class="mess"><b>×</b> A gestão perde tempo organizando tudo</div>
+</div>
+</div>
+<div>
+<div class="section-label">O problema</div>
+<h2 class="section-title">Espaços mal gerenciados geram conflitos desnecessários.</h2>
+<p class="section-intro">
+            Quando as reservas são feitas sem um sistema centralizado, a falta de planejamento
+            rapidamente se transforma em desorganização.
+          </p>
+<div class="problem-points">
+<div class="point">
+<div class="point-icon">01</div>
+<div><h4>Falta de visibilidade</h4><p>Usuários não conseguem identificar rapidamente quais espaços estão livres.</p></div>
+</div>
+<div class="point">
+<div class="point-icon">02</div>
+<div><h4>Conflitos de horário</h4><p>Reservas simultâneas podem causar problemas e prejudicar a utilização dos ambientes.</p></div>
+</div>
+<div class="point">
+<div class="point-icon">03</div>
+<div><h4>Gestão descentralizada</h4><p>Informações espalhadas dificultam o controle e aumentam o trabalho administrativo.</p></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="solution" id="solucao">
+<div class="container">
+<div class="center-head">
+<div class="section-label">A solução</div>
+<h2 class="section-title">Tudo o que você precisa para<br/>gerenciar seus espaços.</h2>
+<p class="section-intro">
+            O BookingIO transforma a reserva de espaços em um processo simples,
+            organizado e centralizado.
+          </p>
+</div>
+<div class="feature-grid" id="funcionalidades">
+<article class="feature-card">
+<div class="feature-icon">◈</div>
+<h3>Reservas inteligentes</h3>
+<p>Crie reservas por período e evite automaticamente conflitos de horário.</p>
+</article>
+<article class="feature-card">
+<div class="feature-icon">□</div>
+<h3>Gestão de espaços</h3>
+<p>Cadastre salas, laboratórios, auditórios e acompanhe sua disponibilidade.</p>
+</article>
+<article class="feature-card">
+<div class="feature-icon">◎</div>
+<h3>Usuários e grupos</h3>
+<p>Organize usuários em grupos e defina diferentes níveis de acesso ao sistema.</p>
+</article>
+<article class="feature-card">
+<div class="feature-icon">⌕</div>
+<h3>Pesquisa e filtros</h3>
+<p>Encontre rapidamente o espaço ideal usando filtros de capacidade, disponibilidade, data e tipo.</p>
+</article>
+<article class="feature-card">
+<div class="feature-icon">↗</div>
+<h3>Dashboard</h3>
+<p>Tenha uma visão geral das reservas, espaços e taxa de ocupação.</p>
+</article>
+</div>
+</div>
+</section>
+<section class="how" id="como-funciona">
+<div class="container">
+<div class="section-label">Como funciona</div>
+<h2 class="section-title">Do espaço disponível à reserva<br/>confirmada em poucos passos.</h2>
+<div class="steps">
+<div class="step">
+<div class="step-number">01</div>
+<h3>Cadastre</h3>
+<p>Adicione os espaços disponíveis e configure suas informações.</p>
+</div>
+<div class="step">
+<div class="step-number">02</div>
+<h3>Encontre</h3>
+<p>Pesquise e filtre os ambientes de acordo com suas necessidades.</p>
+</div>
+<div class="step">
+<div class="step-number">03</div>
+<h3>Reserve</h3>
+<p>Escolha o período e faça sua reserva sem conflitos de horário.</p>
+</div>
+<div class="step">
+<div class="step-number">04</div>
+<h3>Gerencie</h3>
+<p>Acompanhe todas as reservas em um único lugar.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="dashboard-section" id="dashboard">
+<div class="container dash-showcase">
+<div>
+<div class="section-label">Controle centralizado</div>
+<h2 class="section-title">Veja o que está acontecendo em seus espaços.</h2>
+<p class="section-intro">
+            O dashboard reúne as principais informações para que gestores acompanhem
+            reservas e ocupação de forma rápida e clara.
+          </p>
+<div class="showcase-list">
+<div class="showcase-item"><i>✓</i><span>Visão geral das reservas</span></div>
+<div class="showcase-item"><i>✓</i><span>Acompanhamento por espaço</span></div>
+<div class="showcase-item"><i>✓</i><span>Análise por período</span></div>
+<div class="showcase-item"><i>✓</i><span>Taxa de ocupação</span></div>
+</div>
+</div>
+<div class="big-dashboard">
+<div class="big-dash-top">
+<h3>Dashboard de Reservas</h3>
+<div class="select">Este mês ▾</div>
+</div>
+<div class="chart-area">
+<div class="chart-box">
+<h4>RESERVAS POR PERÍODO</h4>
+<div class="bars">
+<div class="bar"></div><div class="bar"></div><div class="bar"></div>
+<div class="bar"></div><div class="bar"></div><div class="bar"></div>
+</div>
+</div>
+<div class="chart-box">
+<h4>TAXA DE OCUPAÇÃO</h4>
+<div class="occupancy">
+<div class="ring"><strong>74%</strong></div>
+</div>
+</div>
+</div>
+<div class="dash-bottom">
+<div class="mini-kpi"><small>RESERVAS</small><strong>128</strong></div>
+<div class="mini-kpi"><small>ESPAÇOS</small><strong>18</strong></div>
+<div class="mini-kpi"><small>USUÁRIOS</small><strong>246</strong></div>
+</div>
+</div>
+</div>
+</section>
+<section class="audience">
+<div class="container">
+<div class="center-head">
+<div class="section-label">Para quem é</div>
+<h2 class="section-title">Feito para qualquer lugar<br/>que precise organizar espaços.</h2>
+<p class="section-intro">Uma solução flexível para diferentes ambientes e necessidades de reserva.</p>
+</div>
+<div class="audience-grid">
+<article class="audience-card">
+<div class="num">01</div>
+<h3>Escolas</h3>
+<p>Organize salas, laboratórios e ambientes compartilhados.</p>
+</article>
+<article class="audience-card">
+<div class="num">02</div>
+<h3>Faculdades</h3>
+<p>Centralize a utilização de salas, auditórios e espaços acadêmicos.</p>
+</article>
+<article class="audience-card">
+<div class="num">03</div>
+<h3>Empresas</h3>
+<p>Facilite a reserva de salas de reunião e ambientes corporativos.</p>
+</article>
+<article class="audience-card">
+<div class="num">04</div>
+<h3>Instituições</h3>
+<p>Adapte o gerenciamento às regras e necessidades da sua organização.</p>
+</article>
+</div>
+</div>
+</section>
+<section class="final-cta" id="contato">
+<div class="container">
+<div class="cta-box">
+<div class="section-label">BookingIO</div>
+<h2>Menos conflitos.<br/>Mais organização.</h2>
+<p>
+            Centralize seus espaços, simplifique suas reservas e dê mais autonomia
+            para quem precisa utilizá-los.
+          </p>
+<a class="btn" href="#">Conhecer o BookingIO →</a>
+</div>
+</div>
+</section>
