@@ -12,4 +12,6 @@ public class ApplicationDbContext
         : base(options)
     {
     }
+
+    public DbSet<Space> Spaces { get; set; }
 }

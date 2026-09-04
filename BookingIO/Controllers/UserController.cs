@@ -1,4 +1,5 @@
-﻿using BookingIO.Models;
+﻿using BookingIO.Data;
+using BookingIO.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,13 +8,16 @@ public class UserController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    private readonly ApplicationDbContext _dbContext;
 
     public UserController(
         UserManager<User> userManager,
-        SignInManager<User> signInManager)
+        SignInManager<User> signInManager,
+        ApplicationDbContext dbContext)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _dbContext = dbContext;
     }
 
     public async Task<IActionResult> Login(LoginModel model)
@@ -25,7 +29,7 @@ public class UserController : Controller
             model.Username,
             model.Password,
             isPersistent: true,
-            lockoutOnFailure: true);
+            lockoutOnFailure: false);
 
         if (result.Succeeded)
             return RedirectToAction("Index", "Home");
@@ -35,5 +39,17 @@ public class UserController : Controller
 
         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
         return View(model);
+    }
+
+    public async Task<IActionResult> Register(RegisterUserModel model)
+    {
+        if (!ModelState.IsValid)
+            return RedirectToAction(nameof(Login));
+
+        var user = new User();
+
+        await _userManager.CreateAsync(user);
+
+        return RedirectToAction("Index", "Space");
     }
 }
