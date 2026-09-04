@@ -58,3 +58,5 @@ nunit-*.xml
 
 .idea/
 .vs/
+Migrations/
+.config/
