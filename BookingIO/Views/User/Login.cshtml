@@ -1,4 +1,5 @@
-﻿@{
+﻿@model LoginModel
+@{
     ViewData["Title"] = "Login";
 }
 
@@ -7,48 +8,30 @@
         <div class="col s12 m6 offset-m3">
             <div class="card">
                 <div class="card-content">
-
                     <span class="card-title center-align">
                         Entrar
                     </span>
-
                     <form method="post">
-
                         <div class="input-field">
-                            <input id="login"
-                                   name="login"
-                                   type="text"
-                                   required />
-
-                            <label for="login">
+                            <input asp-for="Username" />
+                            <label asp-for="Username">
                                 Usuário ou E-mail
                             </label>
                         </div>
-
                         <div class="input-field">
-                            <input id="senha"
-                                   name="senha"
-                                   type="password"
-                                   required />
-
-                            <label for="senha">
+                            <input asp-for ="Password" type="password" />
+                            <label asp-for="Password">
                                 Senha
-                            </label>
-                        </div>
-
+                                </label>
                         <div class="center-align">
                             <button class="btn waves-effect waves-light"
                                     type="submit">
                                 Entrar
                             </button>
                         </div>
-
                     </form>
-
                 </div>
             </div>
-
         </div>
     </div>
-
 </div>
