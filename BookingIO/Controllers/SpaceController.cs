@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BookingIO.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BookingIO.Controllers
 {
@@ -6,7 +7,8 @@ namespace BookingIO.Controllers
     {
         public IActionResult Index()
         {
-            return View("CadastrarSpace");
+            var model = new CreateSpace();
+            return View("CadastrarSpace", model);
         }
     }
 }

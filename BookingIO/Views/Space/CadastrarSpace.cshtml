@@ -1,6 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model CreateSpace
 @{
 }
 <link rel="stylesheet" href="~/css/CadastroEspaco.css" />
@@ -18,31 +16,21 @@
 
         <form id="formCadastro">
 
-            <label for="nome">Nome do espaço</label>
-            <input type="text" id="nome" placeholder="Ex: Salão de Eventos Central" required>
+            <label asp-for="Name">Nome:</label>
+            <input asp-for="Name" />
+            <label asp-for="Description"/>Descrição:</label>
+            <input asp-for="Description" />
+            <label asp-for="Capacity">capacidade:</label>
+            <input asp-for="Capacity" />
+            <label asp-for="Localization">localização:</label>
+            <input asp-for="Localization" />
+            <label asp-for="Tipo">Tipo:</label>
+            <input asp-for="Tipo"/>
+            <label asp-for="Status" />status:</label>
+            <input asp-for="Status" />
+            
 
-            <label for="tipo">Tipo de espaço</label>
-            <select id="tipo" required>
-                <option value="">Selecione</option>
-                <option value="sala">Sala</option>
-                <option value="salao">Salão</option>
-                <option value="auditorio">Auditório</option>
-                <option value="quadra">Quadra</option>
-                <option value="outro">Outro</option>
-            </select>
-
-            <label for="capacidade">Capacidade</label>
-            <input type="number" id="capacidade" placeholder="Ex: 50" min="1" required>
-
-            <label for="endereco">Endereço</label>
-            <input type="text" id="endereco" placeholder="Rua, número, bairro" required>
-
-            <label for="descricao">Descrição</label>
-            <textarea id="descricao" rows="5"
-                      placeholder="Descreva o espaço..."></textarea>
-
-            <label for="preco">Preço por hora</label>
-            <input type="number" id="preco" placeholder="R$ 1.000,00" min="0" step="0.01">
+         
 
             
 
