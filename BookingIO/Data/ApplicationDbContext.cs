@@ -14,4 +14,6 @@ public class ApplicationDbContext
     }
 
     public DbSet<Space> Spaces { get; set; }
+    public DbSet<Reserve> Reserves { get; set; }
+    public DbSet<SpaceType> TypeSpaces { get; set; }
 }
