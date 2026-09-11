@@ -20,15 +20,14 @@ public class UserController : Controller
         _dbContext = dbContext;
     }
 
-    public IActionResult LoginPage()
+    [HttpGet]
+    public IActionResult Login()
     {
-        return View("Login");
-    }
-    public IActionResult RegisterPage()
-    {
-        return View("Register");
+        var model = new LoginModel();
+        return View("Login", model);
     }
 
+    [HttpPost]
     public async Task<IActionResult> Login(LoginModel model)
     {
         if (!ModelState.IsValid)
@@ -49,11 +48,16 @@ public class UserController : Controller
         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
         return View(model);
     }
-
+    [HttpGet]
+    public IActionResult Register()
+    {
+        return View("Register");
+    }
+    [HttpPost]
     public async Task<IActionResult> Register(RegisterUserModel model)
     {
         if (!ModelState.IsValid)
-            return RedirectToAction(nameof(Login));
+            return RedirectToAction(nameof(Register));
 
         var user = new User();
 
