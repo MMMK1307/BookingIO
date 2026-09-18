@@ -11,15 +11,14 @@
             Start = start;
             End = end;
         }
+
+        private Reserve() { }
+
         public Guid Id { get; set; }
         public User User { get; set; }
         public Space Space { get; set; }
         public string Status { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
-
-
-
-
     }
 }

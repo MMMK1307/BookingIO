@@ -1,5 +1,6 @@
 ﻿using BookingIO.Data;
 using BookingIO.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingIO.Services
 {
@@ -19,5 +20,22 @@ namespace BookingIO.Services
             await _dbContext.SaveChangesAsync();
             return true;
         }
-    }
+
+        public async Task<List<Reserve>> ListReserveByUser(User user)
+        {
+            return await _dbContext.Reserves
+                .Where(reserve => reserve.User == user)
+                .ToListAsync();
+
+
+        }
+
+        public async Task<Reserve?> GetById(Guid id)
+        {
+            return await _dbContext.Reserves
+                    .Where(space => space.Id == id)
+                    .FirstOrDefaultAsync();
+        }
+
+        }
 }

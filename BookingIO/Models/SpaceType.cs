@@ -7,8 +7,9 @@
             Id = Guid.NewGuid();
             Name = name;           
         }
+
+        private SpaceType() { }
         public Guid Id { get; set; }
-        
         public string Name { get; set; }
     }
 }

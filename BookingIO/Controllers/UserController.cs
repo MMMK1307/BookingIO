@@ -3,6 +3,8 @@ using BookingIO.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
+using UserModel = BookingIO.Models.User;
+
 namespace BookingIO.Controllers;
 public class UserController : Controller
 {
@@ -48,20 +50,22 @@ public class UserController : Controller
         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
         return View(model);
     }
+
     [HttpGet]
     public IActionResult Register()
     {
         return View("Register");
     }
+
     [HttpPost]
     public async Task<IActionResult> Register(RegisterUserModel model)
     {
         if (!ModelState.IsValid)
             return RedirectToAction(nameof(Register));
 
-        var user = new User();
+        var user = UserModel.Create(model);
 
-        await _userManager.CreateAsync(user);
+        await _userManager.CreateAsync(user, model.Password);
 
         return RedirectToAction("Index", "Space");
     }

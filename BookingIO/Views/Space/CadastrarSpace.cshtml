@@ -1,12 +1,9 @@
-﻿@model CreateSpace
+﻿@model RegisterSpaceModel
 @{
 }
 <link rel="stylesheet" href="~/css/CadastroEspaco.css" />
 <script src="~/js/CadastroEspaco.js"></script>
 <script src="~/js/CadastroEspaco.js"></script>
-
-
-
 
 <body>
 
@@ -15,7 +12,6 @@
         <p>Preencha os dados abaixo para cadastrar seu espaço.</p>
 
         <form id="formCadastro">
-
             <label asp-for="Name">Nome:</label>
             <input asp-for="Name" />
             <label asp-for="Description"/>Descrição:</label>
@@ -24,18 +20,10 @@
             <input asp-for="Capacity" />
             <label asp-for="Localization">localização:</label>
             <input asp-for="Localization" />
-            <label asp-for="Tipo">Tipo:</label>
-            <input asp-for="Tipo"/>
+            <label asp-for="Type">Tipo:</label>
+            <input asp-for="Type"/>
             <label asp-for="Status" />status:</label>
             <input asp-for="Status" />
-            
-
-         
-
-            
-
-            
-
         </form>
 
         <p id="mensagem"></p>

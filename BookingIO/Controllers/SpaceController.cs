@@ -7,7 +7,7 @@ namespace BookingIO.Controllers
     {
         public IActionResult Index()
         {
-            var model = new CreateSpace();
+            var model = new RegisterSpaceModel();
             return View("CadastrarSpace", model);
         }
     }

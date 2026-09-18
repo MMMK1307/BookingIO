@@ -1,5 +1,6 @@
 ﻿using BookingIO.Data;
 using BookingIO.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingIO.Services;
 
@@ -20,5 +21,15 @@ public class SpaceTypeServices
         return true;
     }
 
+    public async Task<List<SpaceType>> ListAll()
+    {
+        return await _dbContext.TypeSpaces.ToListAsync();
+    }
 
+    public async Task<SpaceType?> GetById(Guid id)
+    {
+        return await _dbContext.TypeSpaces
+                .Where(space => space.Id == id)
+                .FirstOrDefaultAsync();
+    }
 }

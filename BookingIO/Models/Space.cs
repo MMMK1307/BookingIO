@@ -10,8 +10,9 @@ public class Space
         Localization = localization;
         Type = type;
         Status = status;
-       
     }
+
+    private Space() { }
 
     public Guid Id { get; set; }
     public string Name { get; set; }

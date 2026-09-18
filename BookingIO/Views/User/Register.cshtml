@@ -2,9 +2,16 @@
 @{
     ViewData["Title"] = "Cadastro";
 }
+<style>
+    #card {
+        margin: auto;
+        max-width: 50%;
+    }
+</style>
 
-<div class="card">
+<div class="card" id="card">
     <div class="card-content">
+
 
         <span class="card-title center-align">
             Criar Conta
@@ -14,49 +21,35 @@
 
             <!-- Nome -->
             <div class="input-field">
-                <input id="nome"
-                       name="nome"
-                       type="text"
-                       maxlength="255"
-                       required />
-
+                <input asp-for="Name"/>
+                <label asp-for="Name"/>
+                      
                 <label for="nome">Nome</label>
             </div>
 
             <!-- Login -->
             <div class="input-field">
-                <input id="login"
-                       name="login"
-                       type="text"
-                       maxlength="100"
-                       required />
+                <input asp-for="Login"/>
+                <label asp-for="Login"/>
+                    
 
                 <label for="login">Login</label>
             </div>
 
-            <!-- E-mail -->
             <div class="input-field">
-                <input id="email"
-                       name="email"
-                       type="email"
-                       maxlength="255"
-                       required />
-
-                <label for="email">E-mail</label>
+                <input asp-for="Email" type="email" />
+                <label asp-for="Email">
+                    E-mail
+                </label>
             </div>
 
-            <!-- Senha -->
             <div class="input-field">
-                <input id="senha"
-                       name="senha"
-                       type="password"
-                       maxlength="255"
-                       required />
-
-                <label for="senha">Senha</label>
+                <label asp-for="Password">
+                    Senha
+                </label>
+                <input asp-for ="Password" type="password" />
             </div>
 
-            <!-- Confirmar senha -->
             <div class="input-field">
                 <input id="confirmarSenha"
                        name="confirmarSenha"
