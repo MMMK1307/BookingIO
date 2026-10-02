@@ -1,8 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - BookingIO</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,16 +12,165 @@
 
     <link rel="stylesheet" href="~/css/materialize.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/BookingIO.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <main role="main">
+    @{
+        bool usuarioLogado = User?.Identity?.IsAuthenticated == true;
+    }
+
+    @if (usuarioLogado)
+    {
+        <div class="booking-header">
+            <div class="booking-header-container">
+                <a class="booking-logo" href="/Dashboard">
+                    <span class="booking-logo-mark">
+                        <span></span>
+                        <span></span>
+                    </span>
+                    <span class="booking-logo-text">Booking<span>IO</span></span>
+                </a>
+
+                <div class="booking-nav booking-nav-auth">
+                    <a href="/Dashboard" class="booking-nav-link">Dashboard</a>
+                    <a href="/Space" class="booking-nav-link">Espaços</a>
+                    <a href="/User" class="booking-nav-link">Usuários</a>
+                    <a href="/Reserve" class="booking-nav-link">Minhas Reservas</a>
+                </div>
+
+                <div class="booking-header-actions">
+                    <a href="/User/Logout" class="booking-login-button">Sair</a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="booking-header">
+            <div class="booking-header-container">
+                <a class="booking-logo" href="/">
+                    <span class="booking-logo-mark">
+                        <span></span>
+                        <span></span>
+                    </span>
+                    <span class="booking-logo-text">Booking<span>IO</span></span>
+                </a>
+
+                <div class="booking-nav booking-nav-public">
+                    <a href="/User/Login" class="booking-nav-login">Login</a>
+                    <a href="/User/Register" class="booking-register-button">Cadastro</a>
+                </div>
+            </div>
+        </div>
+    }
+
+    <main class="booking-main">
         @RenderBody()
     </main>
+
+    @if (usuarioLogado)
+    {
+        <div class="booking-footer">
+            <div class="booking-footer-container">
+                <div class="booking-footer-brand">
+                    <a class="booking-logo booking-logo-footer" href="/Dashboard">
+                        <span class="booking-logo-mark">
+                            <span></span>
+                            <span></span>
+                        </span>
+                        <span class="booking-logo-text">Booking<span>IO</span></span>
+                    </a>
+                    <p>
+                        Organize seus espaços.<br />
+                        Simplifique suas reservas.
+                    </p>
+                </div>
+
+                <div class="booking-footer-column">
+                    <h4>NAVEGAÇÃO</h4>
+                    <a href="/Dashboard">Dashboard</a>
+                    <a href="/Space">Espaços</a>
+                    <a href="/User">Usuários</a>
+                    <a href="/Reserve">Minhas Reservas</a>
+                </div>
+
+                <div class="booking-footer-column">
+                    <h4>CONTA</h4>
+                    <a href="/Dashboard">Dashboard</a>
+                    <a href="/User/Logout">Sair</a>
+                </div>
+
+                <div class="booking-footer-description">
+                    <span class="booking-footer-label">BOOKINGIO</span>
+                    <p>
+                        Uma plataforma para organizar espaços,
+                        reservas e usuários em um só lugar.
+                    </p>
+                </div>
+            </div>
+
+            <div class="booking-footer-bottom">
+                <div class="booking-footer-container">
+                    <span>© 2026 BookingIO</span>
+                    <span>Gestão inteligente de espaços</span>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="booking-footer">
+            <div class="booking-footer-container">
+                <div class="booking-footer-brand">
+                    <a class="booking-logo booking-logo-footer" href="/">
+                        <span class="booking-logo-mark">
+                            <span></span>
+                            <span></span>
+                        </span>
+                        <span class="booking-logo-text">Booking<span>IO</span></span>
+                    </a>
+                    <p>
+                        Organize seus espaços.<br />
+                        Simplifique suas reservas.
+                    </p>
+                </div>
+
+                <div class="booking-footer-column">
+                    <h4>NAVEGAÇÃO</h4>
+                    <a href="/">Início</a>
+                    <a href="/#solucao">Solução</a>
+                    <a href="/#funcionalidades">Funcionalidades</a>
+                    <a href="/#como-funciona">Como funciona</a>
+                    <a href="/#dashboard">Dashboard</a>
+                </div>
+
+                <div class="booking-footer-column">
+                    <h4>ACESSO</h4>
+                    <a href="/User/Login">Login</a>
+                    <a href="/User/Register">Cadastro</a>
+                </div>
+
+                <div class="booking-footer-description">
+                    <span class="booking-footer-label">BOOKINGIO</span>
+                    <p>
+                        Uma plataforma simples e centralizada
+                        para organizar espaços e reservas.
+                    </p>
+                </div>
+            </div>
+
+            <div class="booking-footer-bottom">
+                <div class="booking-footer-container">
+                    <span>© 2026 BookingIO</span>
+                    <span>Gestão inteligente de espaços</span>
+                </div>
+            </div>
+        </div>
+    }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/materialize.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
