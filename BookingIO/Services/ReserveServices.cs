@@ -26,8 +26,6 @@ namespace BookingIO.Services
             return await _dbContext.Reserves
                 .Where(reserve => reserve.User == user)
                 .ToListAsync();
-
-
         }
 
         public async Task<Reserve?> GetById(Guid id)
@@ -36,6 +34,5 @@ namespace BookingIO.Services
                     .Where(space => space.Id == id)
                     .FirstOrDefaultAsync();
         }
-
-        }
+    }
 }

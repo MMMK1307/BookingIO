@@ -1,0 +1,156 @@
+@model SpaceSearch
+@{
+    ViewData["Title"] = "Procurar Espaços";
+}
+
+<style>
+    body {
+        background-color: #f7f3cf;
+    }
+
+    .search-header {
+        background-color: #176585;
+        color: white;
+        padding: 25px;
+        border-radius: 12px;
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .search-card {
+        background-color: white;
+        padding: 30px;
+        border-radius: 12px;
+        margin-top: 25px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .section-title {
+        color: #176585;
+        font-weight: 600;
+        margin-bottom: 25px;
+    }
+
+    .btn-search {
+        background-color: #176585;
+        border-radius: 8px;
+        width: 100%;
+        height: 48px;
+        line-height: 48px;
+        font-weight: 600;
+    }
+
+    .btn-search:hover {
+        background-color: #27b1bf;
+    }
+
+    .info-box {
+        background-color: #c2e4cb;
+        padding: 15px;
+        border-radius: 8px;
+        color: #176585;
+        margin-top: 25px;
+    }
+
+    .space-placeholder {
+        background-color: #c2e4cb;
+        border-radius: 10px;
+        padding: 30px;
+        margin-top: 30px;
+        color: #176585;
+        text-align: center;
+    }
+</style>
+
+<div class="container">
+
+    <div class="search-header">
+        <h3>Procurar Espaços</h3>
+        <p>Encontre o ambiente ideal para suas atividades e reuniões.</p>
+    </div>
+
+    <div class="search-card">
+
+        <h5 class="section-title">
+
+            Filtros de Pesquisa
+        </h5>
+
+        <div class="row">
+
+            <div class="input-field col s12 m6">
+            
+                <input id="nome" type="text" maxlength="255">
+                <label for="nome">Nome do espaço</label>
+            </div>
+
+            <div class="input-field col s12 m6">
+        
+                <select id="tipo">
+                    <option value="" selected>Todos os tipos</option>
+                    <option value="Sala de reunião">Sala de reunião</option>
+                    <option value="Auditório">Auditório</option>
+                    <option value="Sala de treinamento">Sala de treinamento</option>
+                    <option value="Espaço de convivência">Espaço de convivência</option>
+                    <option value="Outro">Outro</option>
+                </select>
+                <label>Tipo de espaço</label>
+            </div>
+
+            <div class="input-field col s12 m6">
+ 
+                <input id="capacidade" type="number" min="1">
+                <label for="capacidade">Capacidade mínima de pessoas</label>
+            </div>
+
+            <div class="input-field col s12 m6">
+
+                <input id="localizacao" type="text" maxlength="255">
+                <label for="localizacao">Localização</label>
+            </div>
+
+            <div class="input-field col s12">
+
+                <select id="status">
+                    <option value="" selected>Todos os status</option>
+                    <option value="Disponível">Disponível</option>
+                    <option value="Indisponível">Indisponível</option>
+                    <option value="Manutenção">Manutenção</option>
+                </select>
+                <label>Status do espaço</label>
+            </div>
+
+            <div class="input-field col s12">
+
+                <textarea id="descricao" class="materialize-textarea"></textarea>
+                <label for="descricao">Descrição ou palavras-chave</label>
+            </div>
+
+        </div>
+
+        <button type="button" class="btn btn-large btn-search waves-effect waves-light">
+
+            Buscar Espaços
+        </button>
+
+        <div class="info-box center-align">
+
+            Utilize os filtros para localizar ambientes que atendam às suas necessidades.
+        </div>
+
+    </div>
+
+    <div class="space-placeholder">
+
+        <h5>Espaços encontrados</h5>
+        <p>Os resultados da sua pesquisa aparecerão aqui.</p>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var selects = document.querySelectorAll('select');
+        M.FormSelect.init(selects);
+    });
+</script>

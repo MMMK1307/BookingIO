@@ -1,0 +1,151 @@
+@model CreateSpaceTypeModel
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cadastro de Space Type</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .container {
+            width: 400px;
+            margin: 80px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            color: #222;
+        }
+
+        p {
+            color: #666;
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #mensagem {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Cadastro de Space Type</h1>
+
+        <p>Cadastre um novo tipo de espaço.</p>
+
+        <form id="formCadastro">
+
+            <label asp-for="Name">Nome:</label>
+
+            <input
+                asp-for="Name"
+                type="text"
+                placeholder="Digite o nome do Space Type"
+                required />
+
+            <button type="submit">
+                Cadastrar
+            </button>
+
+        </form>
+
+        <p id="mensagem"></p>
+
+    </div>
+
+    <script>
+        const form = document.getElementById("formCadastro");
+        const mensagem = document.getElementById("mensagem");
+
+        form.addEventListener("submit", async function (event) {
+
+            event.preventDefault();
+
+            const name = document.getElementById("Name").value;
+
+            const response = await fetch("/api/space-types", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: name
+                })
+            });
+
+            if (response.ok) {
+
+                const spaceType = await response.json();
+
+                mensagem.style.color = "green";
+
+                mensagem.textContent =
+                    "Space Type cadastrado com sucesso!";
+
+                form.reset();
+
+            } else {
+
+                const erro = await response.text();
+
+                mensagem.style.color = "red";
+
+                mensagem.textContent = erro;
+            }
+        });
+    </script>
+
+</body>
+
+</html>

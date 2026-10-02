@@ -1,5 +1,6 @@
 ﻿using BookingIO.Data;
 using BookingIO.Models;
+using BookingIO.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseMySQL(connectionString);
 });
+
+builder.Services.AddScoped<SpaceTypeServices>();
+builder.Services.AddScoped<SpaceServices>();
+builder.Services.AddScoped<SpaceTypeServices>();
 
 builder.Services.AddDefaultIdentity<User>(options =>
 {
