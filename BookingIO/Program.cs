@@ -19,6 +19,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<SpaceTypeServices>();
 builder.Services.AddScoped<SpaceServices>();
 builder.Services.AddScoped<SpaceTypeServices>();
+builder.Services.AddScoped<WeatherService>();
+builder.Services.AddHttpClient();
 
 builder.Services.AddDefaultIdentity<User>(options =>
 {
