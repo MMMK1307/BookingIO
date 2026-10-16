@@ -1,13 +1,25 @@
 ﻿namespace BookingIO.Models
 {
+    public enum ReserveStatus
+    {
+        Released,
+        Blocked,
+        Canceled,
+        Rejected,
+
+        Reserved
+    }
+
+
+
     public class Reserve
     {
-        public Reserve(User user, Space space, string status, DateTime start, DateTime end)
+        public Reserve(User user, Space space, ReserveStatus status, DateTime start, DateTime end)
         {
             Id = Guid.NewGuid();
             User = user;
             Space = space;
-            Status = status;
+            Status = status.ToString();
             Start = start;
             End = end;
         }
