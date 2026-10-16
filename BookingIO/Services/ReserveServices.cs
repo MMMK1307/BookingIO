@@ -15,7 +15,7 @@ namespace BookingIO.Services
 
         public async Task<bool> Create(User user, Space space, DateTime start, DateTime end)
         {
-            Reserve reserve = new(user, space, "Reservando", start, end);
+            Reserve reserve = new(user, space, ReserveStatus.Reserved, start, end);
             _dbContext.Add(reserve);
             await _dbContext.SaveChangesAsync();
             return true;
