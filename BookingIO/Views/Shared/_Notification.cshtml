@@ -1,0 +1,63 @@
+﻿@using System.Text.Json
+@using System.Web
+@using BookingIO.Common
+@{
+    List<NotifyMessage> messages = new();
+    if (ViewData[Notify.MessageKey] is not null)
+    {
+        messages = (List<NotifyMessage>)ViewData[Notify.MessageKey]!;
+    }
+}
+<style>
+    .custom-toast {
+        .tbody {
+            display: block;
+        }
+        .title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    }
+    .custom-toast.success {
+        background: linear-gradient(#27b1bfbb, #176585bb)!important;
+    }
+    .custom-toast.error {
+        background: linear-gradient(#FF1F57bb, #FF6378bb)!important;
+    }
+    .custom-toast.warning {
+        background: linear-gradient(#FF7700bb, #FFFF12bb)!important;
+    }
+</style>
+<script>
+    $(document).ready(() => {
+        dealNotifications();
+    });
+
+    function dealNotifications() {
+        const notifications = @Json.Serialize(messages);
+        for (let i = 0; i < notifications.length; i++) {
+            showNotification(notifications[i]);
+        }
+    }
+
+    function getNotificationClass(nType) {
+        const klasses = {
+            0: 'success',
+            1: 'warning',
+            2: 'error'
+        }
+        return `custom-toast ${klasses[nType]}`
+    }
+
+    function showNotification(notification) {
+        const messageHtml = `
+        <div class="tbody">
+            <div class="title">${notification.title}</div>
+            <div>
+                ${notification.body}
+            </div>
+        </div>
+        `;
+        M.toast({ html: messageHtml, classes: getNotificationClass(notification.nType)});
+    }
+</script>

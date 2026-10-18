@@ -1,4 +1,4 @@
-﻿using BookingIO.Data;
+﻿using BookingIO.Common;
 using BookingIO.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,16 +10,13 @@ public class UserController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-    private readonly ApplicationDbContext _dbContext;
 
     public UserController(
         UserManager<User> userManager,
-        SignInManager<User> signInManager,
-        ApplicationDbContext dbContext)
+        SignInManager<User> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _dbContext = dbContext;
     }
 
     [HttpGet]
@@ -42,7 +39,9 @@ public class UserController : Controller
             lockoutOnFailure: false);
 
         if (result.Succeeded)
+        {
             return RedirectToAction("Index", "Home");
+        }
 
         if (result.IsLockedOut)
             return View("Lockout");
@@ -65,8 +64,20 @@ public class UserController : Controller
 
         var user = UserModel.Create(model);
 
-        await _userManager.CreateAsync(user, model.Password);
+        var result = await _userManager.CreateAsync(user, model.Password);
 
-        return RedirectToAction("Index", "Space");
+        if (result.Succeeded)
+        {
+            return RedirectToAction("Login", "User");
+        }
+
+        return View("Register", model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Index", "Home");
     }
 }
