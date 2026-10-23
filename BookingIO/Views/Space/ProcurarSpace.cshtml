@@ -1,6 +1,11 @@
-@model SpaceSearch
+@model BookingIO.Models.SpaceSearch
+
 @{
-    ViewData["Title"] = "Procurar EspaÁos";
+    ViewData["Title"] = "Procurar Espa√ßos";
+
+    var resultados = ViewBag.Results
+        as IEnumerable<BookingIO.Models.Space>
+        ?? Array.Empty<BookingIO.Models.Space>();
 }
 
 <style>
@@ -63,94 +68,121 @@
 </style>
 
 <div class="container">
-
     <div class="search-header">
-        <h3>Procurar EspaÁos</h3>
-        <p>Encontre o ambiente ideal para suas atividades e reuniıes.</p>
+        <h3>Procurar Espa√ßos</h3>
+        <p>Encontre o ambiente ideal para suas atividades e reuni√µes.</p>
     </div>
 
     <div class="search-card">
+        <h5 class="section-title">Filtros de Pesquisa</h5>
 
-        <h5 class="section-title">
+        <form asp-controller="Space" asp-action="Search" method="get">
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <input asp-for="Name" maxlength="255" />
+                    <label asp-for="Name">Nome do espa√ßo</label>
+                </div>
 
-            Filtros de Pesquisa
-        </h5>
+                <div class="col s12 m6">
+                    <label asp-for="Type">Tipo de espa√ßo</label>
+                    <select asp-for="Type"
+                            asp-items="ViewBag.Types"
+                            class="browser-default">
+                        <option value="">Todos os tipos</option>
+                    </select>
+                </div>
 
-        <div class="row">
+                <div class="input-field col s12 m6" style="clear: left;">
+                    <input asp-for="Capacity" type="number" min="1" />
+                    <label asp-for="Capacity">
+                        Capacidade m√≠nima de pessoas
+                    </label>
+                </div>
 
-            <div class="input-field col s12 m6">
-            
-                <input id="nome" type="text" maxlength="255">
-                <label for="nome">Nome do espaÁo</label>
+                <div class="input-field col s12 m6">
+                    <input asp-for="Location" maxlength="255" />
+                    <label asp-for="Location">Localiza√ß√£o</label>
+                </div>
+
+                <div class="col s12">
+                    <label asp-for="Status">Status do espa√ßo</label>
+                    <select asp-for="Status" class="browser-default">
+                        <option value="">Todos os status</option>
+                        <option value="Dispon√≠vel">Dispon√≠vel</option>
+                        <option value="Indispon√≠vel">Indispon√≠vel</option>
+                        <option value="Manuten√ß√£o">Manuten√ß√£o</option>
+                    </select>
+                </div>
+
+                <div class="input-field col s12">
+                    <textarea asp-for="Description"
+                              class="materialize-textarea"></textarea>
+                    <label asp-for="Description">
+                        Descri√ß√£o ou palavras-chave
+                    </label>
+                </div>
             </div>
 
-            <div class="input-field col s12 m6">
-        
-                <select id="tipo">
-                    <option value="" selected>Todos os tipos</option>
-                    <option value="Sala de reuni„o">Sala de reuni„o</option>
-                    <option value="AuditÛrio">AuditÛrio</option>
-                    <option value="Sala de treinamento">Sala de treinamento</option>
-                    <option value="EspaÁo de convivÍncia">EspaÁo de convivÍncia</option>
-                    <option value="Outro">Outro</option>
-                </select>
-                <label>Tipo de espaÁo</label>
-            </div>
-
-            <div class="input-field col s12 m6">
- 
-                <input id="capacidade" type="number" min="1">
-                <label for="capacidade">Capacidade mÌnima de pessoas</label>
-            </div>
-
-            <div class="input-field col s12 m6">
-
-                <input id="localizacao" type="text" maxlength="255">
-                <label for="localizacao">LocalizaÁ„o</label>
-            </div>
-
-            <div class="input-field col s12">
-
-                <select id="status">
-                    <option value="" selected>Todos os status</option>
-                    <option value="DisponÌvel">DisponÌvel</option>
-                    <option value="IndisponÌvel">IndisponÌvel</option>
-                    <option value="ManutenÁ„o">ManutenÁ„o</option>
-                </select>
-                <label>Status do espaÁo</label>
-            </div>
-
-            <div class="input-field col s12">
-
-                <textarea id="descricao" class="materialize-textarea"></textarea>
-                <label for="descricao">DescriÁ„o ou palavras-chave</label>
-            </div>
-
-        </div>
-
-        <button type="button" class="btn btn-large btn-search waves-effect waves-light">
-
-            Buscar EspaÁos
-        </button>
+            <button type="submit"
+                    class="btn btn-large btn-search waves-effect waves-light">
+                Buscar Espa√ßos
+            </button>
+        </form>
 
         <div class="info-box center-align">
-
-            Utilize os filtros para localizar ambientes que atendam ‡s suas necessidades.
+            Utilize os filtros para localizar ambientes que atendam
+            √†s suas necessidades.
         </div>
-
     </div>
 
-    <div class="space-placeholder">
+    <div class="search-card">
+        <h5 class="section-title">Espa√ßos encontrados</h5>
 
-        <h5>EspaÁos encontrados</h5>
-        <p>Os resultados da sua pesquisa aparecer„o aqui.</p>
+        @if (!resultados.Any())
+        {
+            <p>Nenhum espa√ßo encontrado.</p>
+        }
+        else
+        {
+            <div style="overflow-x: auto;">
+                <table class="striped">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Descri√ß√£o</th>
+                            <th>Tipo</th>
+                            <th>Capacidade</th>
+                            <th>Localiza√ß√£o</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var espaco in resultados)
+                        {
+                            <tr>
+                                <td>@espaco.Name</td>
+                                <td>@espaco.Description</td>
+                                <td>@espaco.Type.Name</td>
+                                <td>@espaco.Capacity</td>
+                                <td>@espaco.Localization</td>
+                                <td>@espaco.Status</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
     </div>
-
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var selects = document.querySelectorAll('select');
-        M.FormSelect.init(selects);
+        if (typeof M !== 'undefined') {
+            M.updateTextFields();
+            document.querySelectorAll('textarea.materialize-textarea')
+                .forEach(function (campo) {
+                    M.textareaAutoResize(campo);
+                });
+        }
     });
 </script>
