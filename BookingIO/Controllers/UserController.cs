@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using UserModel = BookingIO.Models.User;
 
 namespace BookingIO.Controllers;
-public class UserController : Controller
+public class UserController : BaseController
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
@@ -70,6 +70,13 @@ public class UserController : Controller
         {
             return RedirectToAction("Login", "User");
         }
+
+        foreach(var error in result.Errors)
+        {
+            NotifyError("Erro Ao Cadastrar", UserErrors.Translate(error.Code));
+        }
+
+        NotifySuccess("Login Realizado com Sucesso");
 
         return View("Register", model);
     }

@@ -25,7 +25,7 @@ public class DateTimeConverter: JsonConverter<DateTime>
         {
             return DateTime.MinValue;
         }
-        return DateTime.ParseExact(v, "Y-M-D h:m", null);
+        return DateTime.ParseExact(v, "yyyy-MM-dd HH:mm", null);
     }
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)

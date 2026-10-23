@@ -30,16 +30,36 @@ public record WeatherCurrent(
     WeatherCondition Condition
 );
 
-public record WeatherCurrentRequest(
+public record WeatherForecastReques(
     WeatherLocation Location,
     WeatherCurrent Current
 );
 
-public record WeatherForecast(
-    DateOnly Date,
-    float MinTemp,
+public record WeatherForecastDayData(
+    [property: JsonPropertyName("maxtemp_c")]
     float MaxTemp,
+    [property: JsonPropertyName("mintemp_c")]
+    float MinTemp,
+    [property: JsonPropertyName("avgtemp_c")]
     float AvgTemp,
-    bool ChanceOfRain,
-    WeatherCondition Condition
+    WeatherCondition Condition,
+    int DailyChanceOfRain,
+    [property: JsonPropertyName("maxwind_kph")]
+    float WindSpeed
+);
+
+public record WeatherForecastDay(
+    DateOnly Date,
+    [property: JsonPropertyName("day")]
+    WeatherForecastDayData Data
+);
+
+public record WeatherForecast(
+    [property: JsonPropertyName("forecasday")]
+    List<WeatherForecastDay> Days
+);
+
+public record WeatherForecastRequest(
+    WeatherLocation Location,
+    WeatherForecast Forcast   
 );

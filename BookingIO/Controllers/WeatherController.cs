@@ -12,9 +12,14 @@ public class WeatherController
         _weatherService = weatherService;
     }
 
-    public async Task<ActionResult> Current()
+    public async Task<ActionResult> Current([FromQuery]string location)
     {
-        var d = await _weatherService.GetCurrentWeather("-25.44583, -49.35921");
-        return new OkResult();
+        return new JsonResult(await _weatherService.GetCurrentWeather(location));
+    }
+
+    public async Task<ActionResult> Forecast([FromQuery]string location, [FromQuery]int days = 3)
+    {
+        var forecast = await _weatherService.GetForecast(location, days);
+        return new JsonResult(forecast);
     }
 }
