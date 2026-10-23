@@ -1,4 +1,13 @@
 ﻿namespace BookingIO.Models;
+
+public enum SpaceStatus
+{
+    Available,
+    Blocked,
+    InProgress,
+    Reserved,
+
+}
 public class Space
 {
     public Space(string name, string description, int capacity, string localization, SpaceType type, string status)
