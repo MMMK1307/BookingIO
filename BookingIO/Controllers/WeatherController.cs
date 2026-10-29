@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookingIO.Controllers;
 
-public class WeatherController
+public class WeatherController : BaseController
 {
     private readonly WeatherService _weatherService;
 
@@ -20,6 +20,10 @@ public class WeatherController
     public async Task<ActionResult> Forecast([FromQuery]string location, [FromQuery]int days = 3)
     {
         var forecast = await _weatherService.GetForecast(location, days);
+        if (forecast is null) {
+
+            return NotFound();
+        }
         return new JsonResult(forecast);
     }
 }

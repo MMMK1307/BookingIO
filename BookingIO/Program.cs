@@ -1,4 +1,5 @@
-﻿using BookingIO.Data;
+﻿using BookingIO.Common.ConfigOption;
+using BookingIO.Data;
 using BookingIO.Models;
 using BookingIO.Services;
 using Microsoft.AspNetCore.Identity;
@@ -65,6 +66,8 @@ builder.Services.AddAuthorization(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.Configure<WeatherOption>(builder.Configuration.GetSection("WeatherAPI"));
 
 var app = builder.Build();
 

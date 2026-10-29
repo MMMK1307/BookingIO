@@ -43,6 +43,8 @@ public class UserController : BaseController
             return RedirectToAction("Index", "Home");
         }
 
+        NotifyWarning(UserErrors.LoginFailed);
+
         if (result.IsLockedOut)
             return View("Lockout");
 

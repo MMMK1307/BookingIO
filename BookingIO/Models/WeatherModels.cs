@@ -8,7 +8,8 @@ public record WeatherLocation(
     string Region,
     string Country,
     float Lat,
-    float Log,
+    float Lon,
+    [property: JsonPropertyName("tz_id")]
     string TimeZoneId
 );
 
@@ -30,7 +31,7 @@ public record WeatherCurrent(
     WeatherCondition Condition
 );
 
-public record WeatherForecastReques(
+public record WeatherCurrentRequest(
     WeatherLocation Location,
     WeatherCurrent Current
 );
@@ -55,11 +56,11 @@ public record WeatherForecastDay(
 );
 
 public record WeatherForecast(
-    [property: JsonPropertyName("forecasday")]
+    [property: JsonPropertyName("forecastday")]
     List<WeatherForecastDay> Days
 );
 
 public record WeatherForecastRequest(
     WeatherLocation Location,
-    WeatherForecast Forcast   
+    WeatherForecast Forecast   
 );

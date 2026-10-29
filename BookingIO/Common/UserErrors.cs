@@ -1,6 +1,7 @@
 ﻿namespace BookingIO.Common;
 
 public static class UserErrors {
+    public const string LoginFailed = "Falha ao Realizar o Login";
     private static Dictionary<string, string> _userErrors = new()
     {
         { "PasswordRequiresDigit", "Senha Requer ao menos um digito" },
