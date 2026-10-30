@@ -1,5 +1,6 @@
 ﻿using BookingIO.Common;
 using BookingIO.Models;
+using BookingIO.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,15 +9,21 @@ using UserModel = BookingIO.Models.User;
 namespace BookingIO.Controllers;
 public class UserController : BaseController
 {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<UserModel> _userManager;
+    private readonly SignInManager<UserModel> _signInManager;
+    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+    private readonly UserService _userService;
 
     public UserController(
-        UserManager<User> userManager,
-        SignInManager<User> signInManager)
+        UserManager<UserModel> userManager,
+        SignInManager<UserModel> signInManager,
+        RoleManager<IdentityRole<Guid>> roleManager,
+        UserService userService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _roleManager = roleManager;
+        _userService = userService;
     }
 
     [HttpGet]
@@ -88,5 +95,42 @@ public class UserController : BaseController
     {
         await _signInManager.SignOutAsync();
         return RedirectToAction("Index", "Home");
+    }
+    
+    public async Task<IActionResult> Index()
+    {
+        var models = await _userService.GetAll();
+        return View("List", models);
+    }
+
+    [Route("/User/{userId}")]
+    public async Task<IActionResult> Edit([FromRoute] Guid userId)
+    {
+        var model = await _userService.GetById(userId);
+
+        if (model == null) return NotFound();
+
+        return View("Edit", model);
+    }
+
+    [HttpPost]
+    [Route("/User/{userId}")]
+    public async Task<IActionResult> Edit([FromRoute] Guid userId, RegisterUserModel editModel)
+    {
+        var model = await _userService.GetById(userId);
+
+        if (model is null) return NotFound();
+
+        var success = await _userService.Update(model, editModel);
+
+        if(!success)
+        {
+            NotifyError(UserErrors.SaveFailed);
+        } else
+        {
+            NotifySuccess("Salvo com Sucesso");
+        }
+
+        return RedirectToAction(nameof(Edit), userId);
     }
 }

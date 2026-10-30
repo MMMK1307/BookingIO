@@ -21,6 +21,7 @@ builder.Services.AddScoped<SpaceTypeServices>();
 builder.Services.AddScoped<SpaceServices>();
 builder.Services.AddScoped<SpaceTypeServices>();
 builder.Services.AddScoped<WeatherService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddHttpClient();
 
 builder.Services.AddDefaultIdentity<User>(options =>
@@ -86,6 +87,13 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+using (var scope = app.Services.CreateScope())
+{
+    await BookingIO.Common.AuthRoles.Roles.AddDefaultRoles(
+        scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>()
+   );
+}
 
 app.MapControllerRoute(
     name: "default",

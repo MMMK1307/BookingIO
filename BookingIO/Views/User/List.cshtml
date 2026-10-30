@@ -1,0 +1,40 @@
+﻿@model List<User>
+@{
+}
+
+<style>
+    .table-container {
+        margin: auto;
+        padding-top: 2em;
+        width: 80%;
+
+        table {
+            background: #fffefaaa;
+        }
+    }
+</style>
+
+<div class="table-container">
+    <table class="responsive-table centered">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Username</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var user in Model)
+            {
+                <tr>
+                    <td>@user.FullName</td>
+                    <td>@user.Email</td>
+                    <td>@user.UserName</td>
+                    <td>
+                        <a class="button" href="/User/@user.Id">Abrir</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
