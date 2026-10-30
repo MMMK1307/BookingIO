@@ -32,4 +32,12 @@ public class SpaceTypeServices
                 .Where(space => space.Id == id)
                 .FirstOrDefaultAsync();
     }
+
+
+    public async Task<SpaceType?> GetByName(string name)
+    {
+        return await _dbContext.TypeSpaces
+            .FirstOrDefaultAsync(p => p.Name == name);
+    }
+    
 }
