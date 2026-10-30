@@ -1,12 +1,15 @@
 ﻿namespace BookingIO.Models
 {
+
+    public record ReserveRequest(Space Space, DateTime Start, DateTime End);
+
+
     public enum ReserveStatus
     {
         Released,
         Blocked,
         Canceled,
         Rejected,
-
         Reserved
     }
 

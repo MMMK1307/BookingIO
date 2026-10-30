@@ -34,5 +34,17 @@ namespace BookingIO.Services
                     .Where(space => space.Id == id)
                     .FirstOrDefaultAsync();
         }
+        public async Task<bool> CheckReservation(ReserveRequest request)
+        {
+            bool exists = await _dbContext.Reserves
+                .Where(reserve => 
+                    request.Space == reserve.Space && (
+                        (reserve.Start > request.Start && reserve.End < reserve.End) ||
+                        (reserve.End > request.End && reserve.Start < request.Start)
+                    ))
+                .AnyAsync();
+
+            return !exists;
+        }
     }
 }

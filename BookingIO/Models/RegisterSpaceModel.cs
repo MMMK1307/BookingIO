@@ -7,5 +7,5 @@ public class RegisterSpaceModel
     public int Capacity { get; set; } = 0;
     public string Localization { get; set; } = "";
     public string Type { get; set; } = "";
-    public string Status { get; set; } = "";
+    public SpaceStatus Status { get; set; }
 }

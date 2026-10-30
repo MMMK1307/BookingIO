@@ -8,9 +8,10 @@ public enum SpaceStatus
     Reserved,
 
 }
+
 public class Space
 {
-    public Space(string name, string description, int capacity, string localization, SpaceType type, string status)
+    public Space(string name, string description, int capacity, string localization, SpaceType type, SpaceStatus)
     {
         Id = Guid.NewGuid();
         Name = name;
@@ -29,6 +30,6 @@ public class Space
     public int Capacity { get; set; } 
     public string Localization { get; set; }
     public SpaceType Type { get; set; }
-    public string Status { get; set; }
+    public SpaceStatus Status { get; set; }
 }
 
