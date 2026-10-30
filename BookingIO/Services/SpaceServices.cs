@@ -7,16 +7,20 @@ namespace BookingIO.Services
     public class SpaceServices
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly SpaceTypeServices _spaceTypeService;
 
-        public SpaceServices(ApplicationDbContext dbContext)
+        public SpaceServices(ApplicationDbContext dbContext, SpaceTypeServices spaceTypeService)
         {
             _dbContext = dbContext;
+            _spaceTypeService = spaceTypeService;
         }
 
         // RegisterSpaceModel model
         public async Task<bool> Create(RegisterSpaceModel model)
         {
-            Space space = new(model.Name, model.Description, model.Capacity, model.Localization, null, model.Status);
+            var f = await _spaceTypeService.GetByName(model.Type);
+
+            Space space = new(model.Name, model.Description, model.Capacity, model.Localization, f, model.Status);
             _dbContext.Add(space);
             await _dbContext.SaveChangesAsync();
             return true;
