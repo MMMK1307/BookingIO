@@ -1,14 +1,26 @@
 ﻿@model RegisterUserModel
 @{
-    ViewData["Title"] = "Cadastro";
+    ViewData["Title"] = "Editar";
+    List<string> roles = (List<string>)ViewData["roles"]!;
+    List<string> userRoles = (List<string>)ViewData["userRoles"]!;
 }
 <style>
-    #card {
+    .card {
         margin: auto;
         max-width: 50%;
     }
     .cards {
         padding-top: 2em;
+    }
+
+    .table-card {
+        padding: 1em;
+        margin-top: 1em;
+    }
+
+    .remove-a {
+        cursor: pointer;
+        color: darkred;
     }
 </style>
 
@@ -44,4 +56,62 @@
 
         </div>
     </div>
+    <div class="card table-card">
+        <h4>Permissões</h4>
+        <table class="responsive-table centered">
+            <tbody>
+                <tr>
+                    <td>
+                        <form>
+                            <select name="newRole" id="newRole">
+                                @foreach(var role in roles)
+                                {
+                                    <option value="@role">@role</option>
+                                }
+                            </select>
+                        </form>
+                    </td>
+                    <td>
+                        <button class="btn waves-effect waves-light" onclick="addRole()">Adicionar</button>
+                    </td>
+
+                </tr>
+                @foreach(var userRole in userRoles)
+                {
+                    <tr>
+                        <td>@userRole</td>
+                        <td>
+                            <a class="remove-a" onclick="removeRole('@userRole')">x Remover</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
+<script>
+    $(document).ready(function(){
+        $('select').formSelect();
+    });
+    function addRole() {
+        const requestData = {
+            "role": $("#newRole").val()
+        }
+        $.post("/User/@Model.Id/AddRole", requestData).done(() => {
+            location.reload();
+        }).fail(() => {
+            NotifyError("Falha ao adicionar permissão");
+        });
+    }
+
+    function removeRole(permission) {
+        const requestData = {
+            "role": permission
+        }
+        $.post("/User/@Model.Id/RemoveRole", requestData).done(() => {
+            location.reload();
+        }).fail(() => {
+            NotifyError("Falha ao remover permissão");
+        });
+    }
+</script>

@@ -11,7 +11,7 @@ public enum SpaceStatus
 
 public class Space
 {
-    public Space(string name, string description, int capacity, string localization, SpaceType type, SpaceStatus)
+    public Space(string name, string description, int capacity, string localization, SpaceType type, SpaceStatus status)
     {
         Id = Guid.NewGuid();
         Name = name;
@@ -22,7 +22,9 @@ public class Space
         Status = status;
     }
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private Space() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     public Guid Id { get; set; }
     public string Name { get; set; }

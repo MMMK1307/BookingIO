@@ -1,14 +1,19 @@
-﻿@using System.Text.Json
-@using System.Web
-@using BookingIO.Common
+﻿@using BookingIO.Common
 @{
-    List<NotifyMessage> messages = new();
-    if (ViewData[Notify.MessageKey] is not null)
+    string jsonMessages = "[]";
+    if (TempData[Notify.MessageKey] is not null)
     {
-        messages = (List<NotifyMessage>)ViewData[Notify.MessageKey]!;
+        jsonMessages = (string)TempData[Notify.MessageKey]!;
     }
 }
 <style>
+    @@media only screen and (min-width: 993px) {
+        #toast-container {
+            top: 3%;
+            right: 5%;
+        }
+    }
+
     .custom-toast {
         .tbody {
             display: block;
@@ -34,7 +39,7 @@
     });
 
     function dealNotifications() {
-        const notifications = @Json.Serialize(messages);
+        const notifications = @Html.Raw(jsonMessages);
         for (let i = 0; i < notifications.length; i++) {
             showNotification(notifications[i]);
         }
@@ -52,12 +57,39 @@
     function showNotification(notification) {
         const messageHtml = `
         <div class="tbody">
-            <div class="title">${notification.title}</div>
+            <div class="title">${notification.Title}</div>
             <div>
-                ${notification.body}
+                ${notification.Body}
             </div>
         </div>
         `;
-        M.toast({ html: messageHtml, classes: getNotificationClass(notification.nType), displayLength: 7000 });
+        M.toast({ html: messageHtml, classes: getNotificationClass(notification.NType), displayLength: 7000 });
+    }
+
+    function NotifySuccess(title, body = "") {
+        const notification = {
+            Title: title,
+            Body: body,
+            NType: 0,
+        };
+        showNotification(notification);
+    }
+
+    function NotifyWarning(title, body = "") {
+        const notification = {
+            Title: title,
+            Body: body,
+            NType: 1,
+        };
+        showNotification(notification);
+    }
+
+    function NotifyError(title, body = "") {
+        const notification = {
+            Title: title,
+            Body: body,
+            NType: 2,
+        };
+        showNotification(notification);
     }
 </script>

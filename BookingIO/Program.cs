@@ -4,6 +4,7 @@ using BookingIO.Models;
 using BookingIO.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,6 +70,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddControllersWithViews();
 
 builder.Services.Configure<WeatherOption>(builder.Configuration.GetSection("WeatherAPI"));
+builder.Services.Configure<AdminOption>(builder.Configuration.GetSection("Admin"));
 
 var app = builder.Build();
 
@@ -92,7 +94,12 @@ using (var scope = app.Services.CreateScope())
 {
     await BookingIO.Common.AuthRoles.Roles.AddDefaultRoles(
         scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>()
-   );
+    );
+
+    await BookingIO.Common.AuthRoles.Roles.AddAdmin(
+        scope.ServiceProvider.GetRequiredService<UserManager<User>>(),
+        scope.ServiceProvider.GetRequiredService<IOptions<AdminOption>>().Value
+    );
 }
 
 app.MapControllerRoute(

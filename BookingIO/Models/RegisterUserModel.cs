@@ -4,6 +4,7 @@ namespace BookingIO.Models;
 
 public class RegisterUserModel
 {
+    public Guid? Id { get; set; } = null;
     
     [StringLength(255)]
     public required string Name { get; set; }

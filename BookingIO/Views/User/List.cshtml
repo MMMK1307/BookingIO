@@ -9,32 +9,68 @@
         width: 80%;
 
         table {
-            background: #fffefaaa;
+            background: #fffefa;
         }
     }
-</style>
 
-<div class="table-container">
-    <table class="responsive-table centered">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Username</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var user in Model)
-            {
+    .title {
+        background: #fffefa;
+        border-radius: 5px;
+        padding: 0.5em;
+    }
+
+    .title-container {
+        display: flex;
+        width: 100%;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 19px;
+        border: 1px solid rgba(23, 101, 133, 0.2);
+        border-radius: 11px;
+        color: #176585 !important;
+        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none !important;
+        background-color: #fffefa;
+    }
+
+    .create-container {
+        text-align: end;
+        margin: 1em;
+    }
+    </style>
+
+    <div class="table-container">
+        <h2 class="title">Usuários</h2>
+        <div class="create-container">
+            <a href="/User/Register" class="btn">Criar</a>
+        </div>
+        <table class="responsive-table centered">
+            <thead>
                 <tr>
-                    <td>@user.FullName</td>
-                    <td>@user.Email</td>
-                    <td>@user.UserName</td>
-                    <td>
-                        <a class="button" href="/User/@user.Id">Abrir</a>
-                    </td>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Username</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach(var user in Model)
+                {
+                    <tr>
+                        <td>@user.FullName</td>
+                        <td>@user.Email</td>
+                        <td>@user.UserName</td>
+                        <td>
+                            <a class="btn" href="/User/@user.Id">Editar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>

@@ -12,6 +12,10 @@
 
     <link rel="stylesheet" href="~/css/materialize.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/materialize.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
     @{
@@ -166,10 +170,6 @@
             </div>
         </div>
     }
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/js/materialize.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
     @await Html.PartialAsync("/Views/Shared/_Notification.cshtml")

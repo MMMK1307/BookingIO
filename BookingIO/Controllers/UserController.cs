@@ -1,4 +1,5 @@
 ﻿using BookingIO.Common;
+using BookingIO.Common.AuthRoles;
 using BookingIO.Models;
 using BookingIO.Services;
 using Microsoft.AspNetCore.Identity;
@@ -27,6 +28,7 @@ public class UserController : BaseController
     }
 
     [HttpGet]
+    [Route("/User/Login")]
     public IActionResult Login()
     {
         var model = new LoginModel();
@@ -34,6 +36,7 @@ public class UserController : BaseController
     }
 
     [HttpPost]
+    [Route("/User/Login")]
     public async Task<IActionResult> Login(LoginModel model)
     {
         if (!ModelState.IsValid)
@@ -60,12 +63,14 @@ public class UserController : BaseController
     }
 
     [HttpGet]
+    [Route("/User/Register")]
     public IActionResult Register()
     {
         return View("Register");
     }
 
     [HttpPost]
+    [Route("/User/Register")]
     public async Task<IActionResult> Register(RegisterUserModel model)
     {
         if (!ModelState.IsValid)
@@ -91,18 +96,21 @@ public class UserController : BaseController
     }
 
     [HttpGet]
+    [Route("/User/Logout")]
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
         return RedirectToAction("Index", "Home");
     }
     
+    [Route("/User")]
     public async Task<IActionResult> Index()
     {
         var models = await _userService.GetAll();
         return View("List", models);
     }
 
+    [HttpGet]
     [Route("/User/{userId}")]
     public async Task<IActionResult> Edit([FromRoute] Guid userId)
     {
@@ -110,7 +118,18 @@ public class UserController : BaseController
 
         if (model == null) return NotFound();
 
-        return View("Edit", model);
+        RegisterUserModel registerModel = new() {
+            Id = userId,
+            Name = model.FullName,
+            Login = model.UserName ?? "",
+            Email = model.Email ?? "",
+            Password = "",
+        };
+
+        ViewData["userRoles"] = await _userManager.GetRolesAsync(model);
+        ViewData["roles"] = Roles.All;
+
+        return View("Edit", registerModel);
     }
 
     [HttpPost]
@@ -132,5 +151,44 @@ public class UserController : BaseController
         }
 
         return RedirectToAction(nameof(Edit), userId);
+    }
+
+    [HttpPost]
+    [Route("/User/{userId}/AddRole")]
+    public async Task<IActionResult> AddRole([FromRoute] Guid userId, [FromForm] string role)
+    {
+        var user = await _userService.GetById(userId);
+
+        if (user is null) return NotFound();
+
+        var response = await _userManager.AddToRoleAsync(user, role);
+
+        if (!response.Succeeded)
+        {
+            NotifyError(UserErrors.RoleFailed);
+            return BadRequest();
+        }
+
+        NotifySuccess("Salvo com Sucesso");
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("/User/{userId}/RemoveRole")]
+    public async Task<IActionResult> RemoveRole([FromRoute] Guid userId, [FromForm] string role)
+    {
+        var user = await _userService.GetById(userId);
+
+        if (user is null) return NotFound();
+
+        var response = await _userManager.RemoveFromRoleAsync(user, role);
+
+        if (!response.Succeeded) {
+            NotifyError(UserErrors.RoleFailed);
+            return BadRequest();
+        }
+
+        NotifySuccess("Removido");
+        return Ok();
     }
 }

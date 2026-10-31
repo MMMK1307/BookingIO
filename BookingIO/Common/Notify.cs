@@ -23,12 +23,24 @@ public static class Notify
 {
     public const string MessageKey = "Message";
 
-    public static void AddNotification(ViewDataDictionary data, NotifyType NType, string title, string body = "")
+    public static void AddNotification(ITempDataDictionary data, NotifyType NType, string title, string body = "")
     {
-        if (data[MessageKey] is null)
-            data[MessageKey] = new List<NotifyMessage>();
+        List<NotifyMessage> notifications;
+        data.TryGetValue(MessageKey, out var value);
+
+        if (value is null)
+        {
+            notifications = new();
+        } else
+        {
+            string jsonValue = (string)value;
+            notifications = JsonSerializer.Deserialize<List<NotifyMessage>>(jsonValue) ?? new();
+        }
+
         NotifyMessage notifyMsg =  new(title, body, NType);
-        ((List<NotifyMessage>)data[MessageKey]!).Add(notifyMsg);
+        notifications.Add(notifyMsg);
+
+        data[MessageKey] = JsonSerializer.Serialize(notifications);
     }
 
     public static string SerializeMessages(List<NotifyMessage> messages)

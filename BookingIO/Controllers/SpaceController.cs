@@ -57,15 +57,6 @@ public class SpaceController : BaseController
             ModelState.AddModelError(nameof(model.Localization),
                 "Informe a localização.");
 
-        if (model.Status != "Available"
-            && model.Status != "Blocked"
-            && model.Status != "InProgress")
-            && model.Status != "Reserved"
-        {
-            ModelState.AddModelError(nameof(model.Status),
-                "Selecione um status válido.");
-        }
-
         SpaceType? tipo = null;
 
         if (Guid.TryParse(model.Type, out var tipoId))
