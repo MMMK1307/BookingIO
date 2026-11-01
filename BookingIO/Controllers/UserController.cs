@@ -82,7 +82,11 @@ public class UserController : BaseController
 
         if (result.Succeeded)
         {
-            return RedirectToAction("Login", "User");
+            if(User is null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            return RedirectToAction("Users", "Admin");
         }
 
         foreach(var error in result.Errors)

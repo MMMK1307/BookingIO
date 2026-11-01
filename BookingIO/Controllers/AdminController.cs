@@ -61,7 +61,7 @@ public class AdminController : BaseController
         var occupiedSpaces = activeSpaces.Count(s =>
             occupiedSpaceIds.Contains(s.Id)
             || s.Status == SpaceStatus.Reserved
-            || s.Status == SpaceStatus.InProgress);
+            || s.Status == SpaceStatus.Destroyed);
 
         var occupancyRate = activeSpaces.Count == 0
             ? 0
@@ -107,8 +107,7 @@ public class AdminController : BaseController
 
         foreach (var user in users)
         {
-            var roles = await _userManager.GetRolesAsync(user);
-            var isAdmin = roles.Any(role => Roles.All.Contains(role));
+            var isAdmin = await _userManager.IsInRoleAsync(user, Roles.Admin);
             model.Users.Add(new AdminUserItemViewModel
             {
                 Id = user.Id,
@@ -156,7 +155,7 @@ public class AdminController : BaseController
                 return RedirectToAction(nameof(Users), new { search });
             }
 
-            var removeResult = await _userManager.RemoveFromRolesAsync(targetUser, Roles.All);
+            var removeResult = await _userManager.RemoveFromRoleAsync(targetUser, Roles.Admin);
             if (!removeResult.Succeeded)
             {
                 NotifyError("Erro", "Não foi possível remover os privilégios do usuário.");
@@ -167,7 +166,7 @@ public class AdminController : BaseController
             return RedirectToAction(nameof(Users), new { search });
         }
 
-        var addResult = await _userManager.AddToRolesAsync(targetUser, Roles.All);
+        var addResult = await _userManager.AddToRoleAsync(targetUser, Roles.Admin);
         if (!addResult.Succeeded)
         {
             NotifyError("Erro", "Não foi possível conceder privilégios ao usuário.");
@@ -333,7 +332,7 @@ public class AdminController : BaseController
         {
             SpaceStatus.Available => "Disponível",
             SpaceStatus.Blocked => "Bloqueado",
-            SpaceStatus.InProgress => "Em andamento",
+            SpaceStatus.Destroyed => "Em andamento",
             SpaceStatus.Reserved => "Reservado",
             _ => status.ToString()
         };
@@ -462,8 +461,7 @@ public class AdminController : BaseController
 
     private async Task<bool> IsAdminUser(User user)
     {
-        var roles = await _userManager.GetRolesAsync(user);
-        return roles.Any(role => Roles.All.Contains(role));
+        return await _userManager.IsInRoleAsync(user, Roles.Admin);
     }
 
     private async Task<int> CountAdminUsersAsync()

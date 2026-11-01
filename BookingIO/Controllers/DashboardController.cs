@@ -56,7 +56,7 @@ public class DashboardController : BaseController
         var occupiedSpaces = activeSpaces.Count(s =>
             occupiedSpaceIds.Contains(s.Id) ||
             s.Status == SpaceStatus.Reserved ||
-            s.Status == SpaceStatus.InProgress);
+            s.Status == SpaceStatus.Destroyed);
 
         var totalSpaces = activeSpaces.Count;
         var availableSpaces = Math.Max(0, totalSpaces - occupiedSpaces);

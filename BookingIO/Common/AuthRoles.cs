@@ -49,8 +49,11 @@ public static class Roles
             throw new InvalidOperationException("Default admin user could not be resolved after creation.");
         }
 
+        var assignedRoles = await userManager.GetRolesAsync(admin);
+
         var rolesToAssign = All
             .Where(role => !string.IsNullOrWhiteSpace(role))
+            .Except(assignedRoles)
             .Distinct()
             .ToList();
 

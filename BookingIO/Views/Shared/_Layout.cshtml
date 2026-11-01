@@ -1,3 +1,4 @@
+@using BookingIO.Common.AuthRoles
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -35,10 +36,16 @@
                 </a>
 
                 <div class="booking-nav booking-nav-auth">
-                    <a href="/Dashboard" class="booking-nav-link">Dashboard</a>
-                    <a href="/Space" class="booking-nav-link">Espaços</a>
-                    <a href="/User" class="booking-nav-link">Usuários</a>
-                    <a href="/Reserve" class="booking-nav-link">Minhas Reservas</a>
+                    <a asp-action="Index" asp-controller="Dashboard" class="booking-nav-link">Dashboard</a>
+                    <a asp-action="Index" asp-controller="Space" class="booking-nav-link">Espaços</a>
+                    @if (User is not null && User.IsInRole(Roles.UserManager))
+                    {
+                        <a asp-action="Users" asp-controller="Admin" class="booking-nav-link">Usuários</a>
+                    }
+                    @if (User is not null && User.IsInRole(Roles.Admin))
+                    {
+                        <a asp-action="Index" asp-controller="Admin" class="booking-nav-link">Admin</a>
+                    }
                 </div>
 
                 <div class="booking-header-actions">
@@ -91,10 +98,12 @@
 
                 <div class="booking-footer-column">
                     <h4>NAVEGAÇÃO</h4>
-                    <a href="/Dashboard">Dashboard</a>
-                    <a href="/Space">Espaços</a>
-                    <a href="/User">Usuários</a>
-                    <a href="/Reserve">Minhas Reservas</a>
+                    <a asp-action="Index" asp-controller="Dashboard" class="booking-nav-link">Dashboard</a>
+                    <a asp-action="Index" asp-controller="Space" class="booking-nav-link">Espaços</a>
+                    @if (User is not null && User.IsInRole(Roles.UserManager))
+                    {
+                        <a asp-action="Users" asp-controller="Admin" class="booking-nav-link">Usuários</a>
+                    }
                 </div>
 
                 <div class="booking-footer-column">

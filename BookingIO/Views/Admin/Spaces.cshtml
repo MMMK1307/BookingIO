@@ -9,7 +9,7 @@
             {
                 SpaceStatus.Available => "Disponível",
                 SpaceStatus.Blocked => "Bloqueado",
-                SpaceStatus.InProgress => "Em andamento",
+                SpaceStatus.Destroyed => "Em andamento",
                 SpaceStatus.Reserved => "Reservado",
                 _ => status.ToString()
             }
@@ -298,7 +298,7 @@
                         {
                             SpaceStatus.Available => "Disponível",
                             SpaceStatus.Blocked => "Bloqueado",
-                            SpaceStatus.InProgress => "Em andamento",
+                            SpaceStatus.Destroyed => "Em andamento",
                             SpaceStatus.Reserved => "Reservado",
                             _ => space.Status.ToString()
                         };
@@ -335,7 +335,7 @@
                                 {
                                     <span class="admin-badge admin-badge-blocked">@statusLabel</span>
                                 }
-                                else if (space.Status == SpaceStatus.InProgress)
+                                else if (space.Status == SpaceStatus.Destroyed)
                                 {
                                     <span class="admin-badge admin-badge-inprogress">@statusLabel</span>
                                 }

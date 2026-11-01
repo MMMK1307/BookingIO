@@ -25,6 +25,10 @@
         border-radius: 12px;
         margin-top: 30px;
         text-align: center;
+
+        h3 {
+            margin: 0;
+        }
     }
 
     .search-card {
@@ -79,6 +83,16 @@
         color: #176585;
         text-align: center;
     }
+
+     .btn-container {
+         width: 100%;
+         text-align: right;
+         padding: 1em;
+
+         a {
+            background-color: #c2e4cb!important; 
+         }
+     }
 </style>
 
 <div class="container">
@@ -86,6 +100,14 @@
         <h3>Procurar Espaços</h3>
         <p>Encontre o ambiente ideal para suas atividades e reuniões.</p>
     </div>
+
+    @if(User.IsInRole(Roles.Admin))
+    {
+        <div class="btn-container">
+            <a asp-action="Create" asp-controller="SpaceType" class="booking-login-button">Novo Tipo Espaço</a>
+            <a asp-action="Register" asp-controller="Space" class="booking-login-button">Novo Espaço</a>
+        </div>
+    }
 
     <div class="search-card">
         <h5 class="section-title">Filtros de Pesquisa</h5>
@@ -129,7 +151,7 @@
                 <div class="col s12 m6">
                     <label asp-for="Status">Status:</label>
                     <select asp-for="Status" class="browser-default">
-                        <option value=""></option>
+                        <option value="">Todos</option>
                         @foreach((SpaceStatus status, string name) in Space.GetStatusSelect()) {
                             <option value="@status">@name</option>
                         }
@@ -186,9 +208,9 @@
                                 <td>
                                     @if(User.IsInRole(Roles.ReservationManager))
                                     {
-                                        <a asp-action="Edit" asp-controller="Space" asp-route="@espaco.Id" class="btn waves-effect waves-light">Editar</a>
+                                        <a asp-action="Edit" asp-controller="Space" asp-route-spaceId="@espaco.Id" class="btn waves-effect waves-light">Editar</a>
                                     }
-                                    <a asp-action="Reserve" asp-controller="Space" asp-route="@espaco.Id" class="btn waves-effect waves-light">Reservar</a>
+                                    <a asp-action="Reserve" asp-controller="Space" asp-route-spaceId="@espaco.Id" class="btn waves-effect waves-light">Reservar</a>
                                 </td>
                             </tr>
                         }

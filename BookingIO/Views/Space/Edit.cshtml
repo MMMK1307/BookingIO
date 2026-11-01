@@ -1,0 +1,107 @@
+﻿@model BookingIO.Models.RegisterSpaceModel
+@{
+    ViewData["Title"] = "Cadastro de Espaço";
+}
+<style>
+    #butao{
+        margin-top: 1em;
+    }
+    #card {
+        margin: auto;
+        max-width: 50%;
+    }
+    .cards {
+        padding-top: 2em;
+        padding-bottom: 2em;
+    }
+
+    #get-loc-span {
+        color: var(--blue);
+        font-size: 1rem;
+    }
+</style>
+
+<div class="cards">
+    <div class="card" id="card">
+        <div class="card-content">
+            <div class="container">
+                <h1>Editar Espaço</h1>
+
+                @if (TempData["Success"] is string mensagem)
+                {
+                    <p role="status">@mensagem</p>
+                }
+
+                <form asp-controller="Space" asp-action="Edit" method="post">
+                    <div asp-validation-summary="All" class="red-text"></div>
+
+                    <div>
+                        <label asp-for="Name">Nome:</label>
+                        <input asp-for="Name" required />
+                        <span asp-validation-for="Name" class="red-text"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Description">Descrição:</label>
+                        <textarea asp-for="Description"
+                                  class="materialize-textarea"></textarea>
+                    </div>
+
+                    <div>
+                        <label asp-for="Capacity">Capacidade:</label>
+                        <input asp-for="Capacity" type="number" min="1" required />
+                        <span asp-validation-for="Capacity" class="red-text"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Localization">Localização: <span id="get-loc-span" onclick="getLocation()">(Obter Localização)</span></label>
+                        <input asp-for="Localization" required />
+                        <span asp-validation-for="Localization"
+                              class="red-text"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Type">Tipo:</label>
+                        <select asp-for="Type"
+                                asp-items="ViewBag.Types"
+                                class="browser-default"
+                                required>
+                            <option value="">Selecione um tipo</option>
+                        </select>
+                        <span asp-validation-for="Type" class="red-text"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Status">Status:</label>
+                        <select asp-for="Status" class="browser-default" required>
+                            @foreach((SpaceStatus status, string name) in Space.GetStatusSelect()) {
+                                <option value="@status">@name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Status" class="red-text"></span>
+                    </div>
+
+                    <button id="butao" type="submit" class="btn waves-effect waves-light">
+                        Salvar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function getLocation() 
+    {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                NotifySuccess("Sucesso ao Obter Localizacão");
+                const locValue = `${position.coords.latitude}, ${position.coords.longitude}`
+                $('#Localization').val(locValue);
+            }, () => {
+                NotifyError("Falha ao Obter Localização");
+            });
+        } else {
+            NotifyWarning("Geolocalização não Disponível");
+        }
+    }
+</script>

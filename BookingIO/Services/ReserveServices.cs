@@ -35,7 +35,7 @@ namespace BookingIO.Services
                 if (lockedSpace.Status == SpaceStatus.Blocked)
                     return false;
 
-                if (lockedSpace.Status == SpaceStatus.Reserved || lockedSpace.Status == SpaceStatus.InProgress)
+                if (lockedSpace.Status == SpaceStatus.Reserved || lockedSpace.Status == SpaceStatus.Destroyed)
                     return false;
 
                 if (await HasConflictAsync(lockedSpace.Id, start, end))
@@ -193,7 +193,7 @@ namespace BookingIO.Services
             if (space.Status == SpaceStatus.Blocked)
                 return false;
 
-            if (space.Status == SpaceStatus.Reserved || space.Status == SpaceStatus.InProgress)
+            if (space.Status == SpaceStatus.Reserved || space.Status == SpaceStatus.Destroyed)
                 return false;
 
             if (start >= end)

@@ -6,8 +6,8 @@
 <style>
     .admin-users-page {
         max-width: 1180px;
-        margin: 32px auto 48px;
-        padding: 0 20px;
+        margin: 0 auto 48px;
+        padding: 2em 20px;
     }
 
     .admin-users-header {
@@ -31,14 +31,13 @@
     }
 
     .admin-users-search input {
+        background-color: #fffefa!important; 
         min-width: 260px;
-        padding: 10px 14px;
-        border-radius: 10px;
-        border: 1px solid #dfeaf1;
-        background: #fff;
+        padding: 0.3em!important;
+        border-radius: 5px!important;
     }
 
-    .admin-users-search button {
+    .admin-users-search button, .admin-users-search a {
         border: none;
         border-radius: 10px;
         background: #176585;
@@ -191,6 +190,7 @@
         <form asp-action="Users" method="get" class="admin-users-search">
             <input type="text" name="search" value="@Model.Search" placeholder="Buscar por nome, usuário ou e-mail" />
             <button type="submit">Buscar</button>
+            <a asp-controller="User" asp-action="Register">Novo</a>
         </form>
     </div>
 
@@ -265,6 +265,7 @@
                                             <button type="submit" class="admin-user-action lock">Bloquear</button>
                                         </form>
                                     }
+                                    <a class="admin-user-action" href="/User/@user.Id">Editar</a>
                                 </div>
                             </td>
                         </tr>

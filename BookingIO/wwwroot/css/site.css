@@ -563,7 +563,7 @@ nav.booking-nav a {
 }
 
 .booking-nav-link {
-    padding: 8px 0 !important;
+    padding: 0.5em 1em !important;
     color: #66818c !important;
     font-size: 14px !important;
     font-weight: 600;

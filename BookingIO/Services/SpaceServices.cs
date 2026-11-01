@@ -17,7 +17,7 @@ namespace BookingIO.Services
 
         public async Task<Space?> GetById(Guid spaceId)
         {
-            return await _dbContext.Spaces.FirstOrDefaultAsync(s => s.Id == spaceId);
+            return await _dbContext.Spaces.Include(s => s.Type).FirstOrDefaultAsync(s => s.Id == spaceId);
         }
 
         public async Task<bool> Create(RegisterSpaceModel model)
@@ -31,6 +31,24 @@ namespace BookingIO.Services
 
             Space space = new(model.Name, model.Description, model.Capacity, model.Localization, typeService, model.Status);
             _dbContext.Add(space);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> Edit(Space space, RegisterSpaceModel model)
+        {
+            var typeService = await _spaceTypeService.GetById(model.Type);
+
+            if (typeService is null) return false;
+
+            space.Name = model.Name;
+            space.Localization = model.Localization;
+            space.Description = model.Description;
+            space.Capacity = model.Capacity;
+            space.Status = model.Status;
+            space.Type = typeService;
+
+            _dbContext.Update(space);
             await _dbContext.SaveChangesAsync();
             return true;
         }
