@@ -18,7 +18,7 @@ public class SpaceController : BaseController
         _spaceService = spaceService;
     }
 
-    private async Task CarregarTipos(string? selecionado = null)
+    private async Task CarregarTipos(Guid? selecionado = null)
     {
         var tipos = await _context.TypeSpaces
             .AsNoTracking()
@@ -35,6 +35,7 @@ public class SpaceController : BaseController
 
 
     [HttpGet]
+    [Route("/{controller}/Register")]
     public async Task<IActionResult> Register()
     {
         await CarregarTipos();
@@ -43,9 +44,9 @@ public class SpaceController : BaseController
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Route("/{controller}/Register")]
     public async Task<IActionResult> Register(RegisterSpaceModel model)
     {
-
         if (string.IsNullOrWhiteSpace(model.Name))
             ModelState.AddModelError(nameof(model.Name), "Informe o nome.");
 
@@ -57,22 +58,12 @@ public class SpaceController : BaseController
             ModelState.AddModelError(nameof(model.Localization),
                 "Informe a localização.");
 
-        SpaceType? tipo = null;
-
-        if (Guid.TryParse(model.Type, out var tipoId))
-            tipo = await _context.TypeSpaces.FindAsync(tipoId);
-
-        if (tipo is null)
-            ModelState.AddModelError(nameof(model.Type),
-                "Selecione um tipo cadastrado.");
-
-        if (!ModelState.IsValid)
+       if (!ModelState.IsValid || !await _spaceService.Create(model))
         {
+            NotifyError("Erro ao Salvar");
             await CarregarTipos(model.Type);
             return View("CadastrarSpace", model);
         }
-
-        await _spaceService.Create(model);
 
         NotifySuccess("Espaço cadastrado com sucesso!");
 
@@ -80,7 +71,7 @@ public class SpaceController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> Search([FromQuery] SpaceSearch filtros)
+    public async Task<IActionResult> Index([FromQuery] SpaceSearch filtros)
     {
         var spaces = await _spaceService.Search(filtros);
 
@@ -89,5 +80,14 @@ public class SpaceController : BaseController
         await CarregarTipos(filtros.Type);
 
         return View("procurarspace", filtros);
+    }
+
+    [HttpGet]
+    [Route("/{controller}/{spaceId}")]
+    public async Task<IActionResult> Edit([FromRoute] Guid spaceId)
+    {
+        var model = _spaceService.GetById(spaceId);
+        if (model is null) return NotFound();
+        return View("Edit", model);
     }
 }

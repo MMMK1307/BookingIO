@@ -20,6 +20,6 @@ public class SpaceTypeController : Controller
     {
         var result = await _spaceTypeService.Create(name);
 
-        return RedirectToAction();
+        return RedirectToAction("Index", "Space");
     }
 }

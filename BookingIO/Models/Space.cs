@@ -4,9 +4,8 @@ public enum SpaceStatus
 {
     Available,
     Blocked,
-    InProgress,
+    Destroyed,
     Reserved,
-
 }
 
 public class Space
@@ -33,5 +32,17 @@ public class Space
     public string Localization { get; set; }
     public SpaceType Type { get; set; }
     public SpaceStatus Status { get; set; }
+
+    public static List<Tuple<SpaceStatus, string>> GetStatusSelect()
+    {
+        List<Tuple<SpaceStatus, string>> select = new()
+        {
+            new(SpaceStatus.Available, "Disponível"),
+            new(SpaceStatus.Blocked, "Bloqueado"),
+            new(SpaceStatus.Destroyed, "Destruído"),
+            new(SpaceStatus.Reserved, "Reservado"),
+        };
+        return select;
+    }
 }
 

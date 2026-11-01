@@ -44,35 +44,35 @@
         text-align: end;
         margin: 1em;
     }
-    </style>
+</style>
 
-    <div class="table-container">
-        <h2 class="title">
-            Usuários
-        </h2>
-        <div class="create-container">
-            <a href="/User/Register" class="btn">Criar</a>
-        </div>
-        <table class="responsive-table centered">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>Username</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach(var user in Model)
-                {
-                    <tr>
-                        <td>@user.FullName</td>
-                        <td>@user.Email</td>
-                        <td>@user.UserName</td>
-                        <td>
-                            <a class="btn" href="/User/@user.Id">Editar</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+<div class="table-container">
+    <h2 class="title">
+        Usuários
+    </h2>
+    <div class="create-container">
+        <a href="/User/Register" class="btn">Criar</a>
     </div>
+    <table class="responsive-table centered">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Username</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var user in Model)
+            {
+                <tr>
+                    <td>@user.FullName</td>
+                    <td>@user.Email</td>
+                    <td>@user.UserName</td>
+                    <td>
+                        <a class="btn" href="/User/@user.Id">Editar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

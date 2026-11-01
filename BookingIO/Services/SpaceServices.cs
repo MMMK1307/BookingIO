@@ -15,12 +15,21 @@ namespace BookingIO.Services
             _spaceTypeService = spaceTypeService;
         }
 
-        // RegisterSpaceModel model
+        public async Task<Space?> GetById(Guid spaceId)
+        {
+            return await _dbContext.Spaces.FirstOrDefaultAsync(s => s.Id == spaceId);
+        }
+
         public async Task<bool> Create(RegisterSpaceModel model)
         {
-            var f = await _spaceTypeService.GetByName(model.Type);
+            var typeService = await _spaceTypeService.GetById(model.Type);
 
-            Space space = new(model.Name, model.Description, model.Capacity, model.Localization, f, model.Status);
+            if (typeService is null)
+            {
+                return false;
+            }
+
+            Space space = new(model.Name, model.Description, model.Capacity, model.Localization, typeService, model.Status);
             _dbContext.Add(space);
             await _dbContext.SaveChangesAsync();
             return true;
@@ -37,15 +46,18 @@ namespace BookingIO.Services
                 d = d.Where(s => s.Description.Contains(search.Description));
 
             if (search.Capacity is not null)
-                d = d.Where(s => s.Capacity == search.Capacity);
+                d = d.Where(s => s.Capacity >= search.Capacity);
 
             if (!string.IsNullOrEmpty(search.Location))
                 d = d.Where(s => s.Localization.Contains(search.Location));
 
-            if (!string.IsNullOrEmpty(search.Type))
-                d = d.Where(s => s.Type.Name == search.Type);
+            if (search.Type is not null)
+                d = d.Where(s => s.Type.Id == search.Type);
 
-            return await d.ToListAsync();
+            if (search.Status is not null)
+                d = d.Where(s => s.Status == search.Status);
+                
+            return await d.Include(s => s.Type).ToListAsync();
         }
     }
 }

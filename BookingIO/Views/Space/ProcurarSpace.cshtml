@@ -1,3 +1,4 @@
+@using BookingIO.Common.AuthRoles
 @model BookingIO.Models.SpaceSearch
 
 @{
@@ -11,6 +12,10 @@
 <style>
     body {
         background-color: #f7f3cf;
+    }
+
+    .container {
+        padding: 1em 0;
     }
 
     .search-header {
@@ -85,23 +90,14 @@
     <div class="search-card">
         <h5 class="section-title">Filtros de Pesquisa</h5>
 
-        <form asp-controller="Space" asp-action="Search" method="get">
+        <form asp-controller="Space" method="get">
             <div class="row">
                 <div class="input-field col s12 m6">
                     <input asp-for="Name" maxlength="255" />
                     <label asp-for="Name">Nome do espaço</label>
                 </div>
 
-                <div class="col s12 m6">
-                    <label asp-for="Type">Tipo de espaço</label>
-                    <select asp-for="Type"
-                            asp-items="ViewBag.Types"
-                            class="browser-default">
-                        <option value="">Todos os tipos</option>
-                    </select>
-                </div>
-
-                <div class="input-field col s12 m6" style="clear: left;">
+                <div class="input-field col s12 m6">
                     <input asp-for="Capacity" type="number" min="1" />
                     <label asp-for="Capacity">
                         Capacidade mínima de pessoas
@@ -113,23 +109,34 @@
                     <label asp-for="Location">Localização</label>
                 </div>
 
-                <div class="col s12">
-                    <label asp-for="Status">Status do espaço</label>
-                    <select asp-for="Status" class="browser-default">
-                        <option value="">Todos os status</option>
-                        <option value="Disponível">Disponível</option>
-                        <option value="Indisponível">Indisponível</option>
-                        <option value="Manutenção">Manutenção</option>
-                    </select>
-                </div>
-
-                <div class="input-field col s12">
+                <div class="input-field col s12 m6">
                     <textarea asp-for="Description"
                               class="materialize-textarea"></textarea>
                     <label asp-for="Description">
                         Descrição ou palavras-chave
                     </label>
                 </div>
+
+                <div class="col s12 m6">
+                    <label asp-for="Type">Tipo</label>
+                    <select asp-for="Type"
+                            asp-items="ViewBag.Types"
+                            class="browser-default">
+                        <option value="">Todos os tipos</option>
+                    </select>
+                </div>
+
+                <div class="col s12 m6">
+                    <label asp-for="Status">Status:</label>
+                    <select asp-for="Status" class="browser-default">
+                        <option value=""></option>
+                        @foreach((SpaceStatus status, string name) in Space.GetStatusSelect()) {
+                            <option value="@status">@name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Status" class="red-text"></span>
+                </div>
+
             </div>
 
             <button type="submit"
@@ -163,6 +170,7 @@
                             <th>Capacidade</th>
                             <th>Localização</th>
                             <th>Status</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -175,6 +183,13 @@
                                 <td>@espaco.Capacity</td>
                                 <td>@espaco.Localization</td>
                                 <td>@espaco.Status</td>
+                                <td>
+                                    @if(User.IsInRole(Roles.ReservationManager))
+                                    {
+                                        <a asp-action="Edit" asp-controller="Space" asp-route="@espaco.Id" class="btn waves-effect waves-light">Editar</a>
+                                    }
+                                    <a asp-action="Reserve" asp-controller="Space" asp-route="@espaco.Id" class="btn waves-effect waves-light">Reservar</a>
+                                </td>
                             </tr>
                         }
                     </tbody>
