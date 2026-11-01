@@ -21,6 +21,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<SpaceTypeServices>();
 builder.Services.AddScoped<SpaceServices>();
 builder.Services.AddScoped<SpaceTypeServices>();
+builder.Services.AddScoped<ReserveServices>();
 builder.Services.AddScoped<WeatherService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddHttpClient();
