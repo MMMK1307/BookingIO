@@ -1,0 +1,276 @@
+@model BookingIO.Models.ViewModels.AdminUsersViewModel
+@{
+    ViewData["Title"] = "Usuários";
+}
+
+<style>
+    .admin-users-page {
+        max-width: 1180px;
+        margin: 32px auto 48px;
+        padding: 0 20px;
+    }
+
+    .admin-users-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 22px;
+    }
+
+    .admin-users-header h1 {
+        margin: 0;
+        color: #1d2c3f;
+        font-size: clamp(2rem, 2.8vw, 2.5rem);
+    }
+
+    .admin-users-search {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .admin-users-search input {
+        min-width: 260px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid #dfeaf1;
+        background: #fff;
+    }
+
+    .admin-users-search button {
+        border: none;
+        border-radius: 10px;
+        background: #176585;
+        color: #fff;
+        font-weight: 700;
+        padding: 10px 18px;
+        cursor: pointer;
+    }
+
+    .admin-users-panel {
+        background: #fff;
+        border: 1px solid #e3edf4;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 12px 28px rgba(19, 34, 44, 0.04);
+    }
+
+    .admin-users-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .admin-users-table th,
+    .admin-users-table td {
+        padding: 16px 18px;
+        text-align: left;
+        border-bottom: 1px solid #edf3f7;
+        vertical-align: middle;
+    }
+
+    .admin-users-table th {
+        background: #f8fbfe;
+        color: #667d8c;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .admin-users-table td {
+        color: #213549;
+    }
+
+    .admin-user-name {
+        font-weight: 800;
+        color: #1b2c3e;
+    }
+
+    .admin-user-meta {
+        display: block;
+        color: #6f8290;
+        font-size: 0.8rem;
+        margin-top: 4px;
+    }
+
+    .admin-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.74rem;
+        font-weight: 700;
+    }
+
+    .admin-badge-admin {
+        background: #dff6ea;
+        color: #0f7f4b;
+    }
+
+    .admin-badge-user {
+        background: #edf4fb;
+        color: #255d8c;
+    }
+
+    .admin-badge-blocked {
+        background: #ffe9e9;
+        color: #b63b3b;
+    }
+
+    .admin-badge-active {
+        background: #edf7ef;
+        color: #21714a;
+    }
+
+    .admin-user-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .admin-user-action {
+        border: none;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .admin-user-action.admin {
+        background: #edf7ef;
+        color: #155b3a;
+    }
+
+    .admin-user-action.user {
+        background: #edf4fb;
+        color: #214f74;
+    }
+
+    .admin-user-action.lock {
+        background: #ffe9e9;
+        color: #a12f2f;
+    }
+
+    .admin-user-action.unlock {
+        background: #ecfaf3;
+        color: #19784a;
+    }
+
+    .admin-empty {
+        padding: 32px 18px;
+        text-align: center;
+        color: #657d8d;
+    }
+
+    @@media (max-width: 700px) {
+        .admin-users-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .admin-users-search {
+            width: 100%;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .admin-users-search input {
+            width: 100%;
+            min-width: 0;
+        }
+    }
+</style>
+
+<div class="admin-users-page">
+    <div class="admin-users-header">
+        <div>
+            <span class="admin-eyebrow" style="display:inline-block;margin-bottom:8px;color:#176585;font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;">Usuários</span>
+            <h1>Gestão de usuários</h1>
+        </div>
+
+        <form asp-action="Users" method="get" class="admin-users-search">
+            <input type="text" name="search" value="@Model.Search" placeholder="Buscar por nome, usuário ou e-mail" />
+            <button type="submit">Buscar</button>
+        </form>
+    </div>
+
+    <div class="admin-users-panel">
+        @if (Model.Users.Count == 0)
+        {
+            <div class="admin-empty">
+                Nenhum usuário encontrado.
+            </div>
+        }
+        else
+        {
+            <table class="admin-users-table">
+                <thead>
+                    <tr>
+                        <th>Usuário</th>
+                        <th>E-mail</th>
+                        <th>Cadastro</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr>
+                            <td>
+                                <span class="admin-user-name">@user.FullName</span>
+                                <span class="admin-user-meta">@user.UserName</span>
+                            </td>
+                            <td>@user.Email</td>
+                            <td>@user.RegisteredAt.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (user.IsAdmin)
+                                {
+                                    <span class="admin-badge admin-badge-admin">Administrador</span>
+                                }
+                                else
+                                {
+                                    <span class="admin-badge admin-badge-user">Usuário</span>
+                                }
+
+                                @if (user.IsLocked)
+                                {
+                                    <span class="admin-badge admin-badge-blocked" style="margin-left:8px;">Bloqueado</span>
+                                }
+                                else
+                                {
+                                    <span class="admin-badge admin-badge-active" style="margin-left:8px;">Ativo</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="admin-user-actions">
+                                    <form asp-action="ToggleAdmin" asp-controller="Admin" asp-route-userId="@user.Id" asp-route-search="@Model.Search" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="admin-user-action @(user.IsAdmin ? "user" : "admin")">
+                                            @(user.IsAdmin ? "Remover admin" : "Promover admin")
+                                        </button>
+                                    </form>
+
+                                    @if (user.IsLocked)
+                                    {
+                                        <form asp-action="UnlockUser" asp-controller="Admin" asp-route-userId="@user.Id" asp-route-search="@Model.Search" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="admin-user-action unlock">Desbloquear</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="LockUser" asp-controller="Admin" asp-route-userId="@user.Id" asp-route-search="@Model.Search" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="admin-user-action lock">Bloquear</button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

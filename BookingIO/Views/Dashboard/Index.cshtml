@@ -1,0 +1,398 @@
+@model BookingIO.Models.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var firstName = string.IsNullOrWhiteSpace(Model.UserName)
+        ? "Usuário"
+        : Model.UserName.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? Model.UserName;
+    var maxDayCount = Math.Max(1, Model.NextSevenDays.Any() ? Model.NextSevenDays.Max(x => x.Count) : 1);
+}
+
+<style>
+    .dashboard-shell {
+        max-width: 1180px;
+        margin: 32px auto 48px;
+        padding: 0 20px;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .dashboard-header h1 {
+        margin: 6px 0 8px;
+        font-size: clamp(2rem, 3vw, 2.8rem);
+        color: #1f2d3d;
+    }
+
+    .dashboard-subtitle {
+        margin: 0;
+        color: #607384;
+        font-size: 1rem;
+    }
+
+    .dashboard-date {
+        background: #eef6ff;
+        color: #195f92;
+        border: 1px solid #d9ebff;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .dashboard-kpis {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(180px, 1fr));
+        gap: 18px;
+        margin-bottom: 28px;
+    }
+
+    .dashboard-kpi {
+        background: #fff;
+        border: 1px solid #e7eef4;
+        border-radius: 20px;
+        padding: 22px 20px;
+        box-shadow: 0 8px 24px rgba(31, 45, 61, 0.05);
+    }
+
+    .dashboard-kpi-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.8rem;
+        color: #64798a;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .dashboard-kpi-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #176585, #2bb3c7);
+        color: #fff;
+        font-weight: 800;
+    }
+
+    .dashboard-kpi strong {
+        display: block;
+        margin-top: 18px;
+        font-size: 2rem;
+        color: #1a2734;
+    }
+
+    .dashboard-kpi small {
+        color: #6c7f8f;
+        font-size: 0.8rem;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+        gap: 22px;
+        margin-bottom: 24px;
+    }
+
+    .dashboard-panel {
+        background: #fff;
+        border: 1px solid #e7eef4;
+        border-radius: 22px;
+        padding: 20px 22px;
+        box-shadow: 0 8px 22px rgba(31, 45, 61, 0.04);
+    }
+
+    .dashboard-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .dashboard-panel-header h2 {
+        margin: 0;
+        font-size: 1.4rem;
+        color: #1d2c3f;
+    }
+
+    .dashboard-link {
+        color: #176585;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .dashboard-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .dashboard-table th,
+    .dashboard-table td {
+        padding: 12px 10px;
+        border-bottom: 1px solid #edf2f6;
+        text-align: left;
+        color: #2d3f52;
+    }
+
+    .dashboard-table th {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #72849a;
+    }
+
+    .dashboard-status {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+        background: #eafaf0;
+        color: #1d7d4b;
+    }
+
+    .dashboard-empty {
+        border: 1px dashed #cfe0ec;
+        border-radius: 18px;
+        padding: 26px 18px;
+        text-align: center;
+        color: #687d8f;
+        background: #f8fbff;
+    }
+
+    .dashboard-legend {
+        display: flex;
+        justify-content: space-around;
+        gap: 12px;
+        margin-top: 18px;
+    }
+
+    .dashboard-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #4c6478;
+        font-weight: 600;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .dot.available { background: #2bb3c7; }
+    .dot.occupied { background: #ffb84d; }
+    .dot.total { background: #dfeaf4; }
+
+    .dashboard-ring {
+        width: 170px;
+        height: 170px;
+        margin: 10px auto 14px;
+        border-radius: 50%;
+        position: relative;
+        background: conic-gradient(#2bb3c7 0 @Model.OccupancyRate%, #edf2f7 @Model.OccupancyRate% 100%);
+    }
+
+    .dashboard-ring::before {
+        content: "";
+        position: absolute;
+        inset: 18px;
+        background: #fff;
+        border-radius: 50%;
+    }
+
+    .dashboard-ring span {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        font-weight: 800;
+        color: #1d2c3f;
+        font-size: 1.8rem;
+    }
+
+    .dashboard-days {
+        display: flex;
+        align-items: end;
+        gap: 10px;
+        height: 180px;
+        padding-top: 16px;
+    }
+
+    .day-bar {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: end;
+        gap: 8px;
+        min-width: 36px;
+    }
+
+    .day-bar-value {
+        width: 100%;
+        max-width: 30px;
+        border-radius: 10px 10px 0 0;
+        background: linear-gradient(180deg, #3dc4d8 0%, #176585 100%);
+        min-height: 12px;
+    }
+
+    .day-label {
+        font-size: 0.72rem;
+        color: #6b7d8e;
+    }
+
+    @@media (max-width: 900px) {
+        .dashboard-kpis {
+            grid-template-columns: repeat(2, minmax(150px, 1fr));
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .dashboard-kpis {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<div class="dashboard-shell">
+    <div class="dashboard-header">
+        <div>
+            <span class="client-eyebrow" style="display:inline-block;margin-bottom:8px;">VISÃO GERAL</span>
+            <h1>Olá, @firstName!</h1>
+            <p class="dashboard-subtitle">Acompanhe suas reservas e a disponibilidade dos espaços.</p>
+        </div>
+        <div class="dashboard-date">@DateTime.Now.ToString("dd 'de' MMMM", new System.Globalization.CultureInfo("pt-BR"))</div>
+    </div>
+
+    <div class="dashboard-kpis">
+        <div class="dashboard-kpi">
+            <div class="dashboard-kpi-label">
+                <span class="dashboard-kpi-icon">R</span>
+                Próximas reservas
+            </div>
+            <strong>@Model.FutureReservations</strong>
+            <small>reservas agendadas</small>
+        </div>
+
+        <div class="dashboard-kpi">
+            <div class="dashboard-kpi-label">
+                <span class="dashboard-kpi-icon">H</span>
+                Reservas hoje
+            </div>
+            <strong>@Model.TodayReservations</strong>
+            <small>para o dia de hoje</small>
+        </div>
+
+        <div class="dashboard-kpi">
+            <div class="dashboard-kpi-label">
+                <span class="dashboard-kpi-icon">E</span>
+                Espaços disponíveis
+            </div>
+            <strong>@Model.AvailableSpaces</strong>
+            <small>de @Model.TotalSpaces espaços ativos</small>
+        </div>
+
+        <div class="dashboard-kpi">
+            <div class="dashboard-kpi-label">
+                <span class="dashboard-kpi-icon">%</span>
+                Ocupação atual
+            </div>
+            <strong>@Model.OccupancyRate%</strong>
+            <small>@Model.OccupiedSpaces espaços ocupados</small>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <section class="dashboard-panel">
+            <div class="dashboard-panel-header">
+                <h2>Próximas reservas</h2>
+                <a class="dashboard-link" href="/Reserve">Ver todas →</a>
+            </div>
+
+            @if (Model.NextReservations.Count == 0)
+            {
+                <div class="dashboard-empty">
+                    <h3>Nenhuma reserva próxima</h3>
+                    <p>Suas próximas reservas aparecerão aqui.</p>
+                </div>
+            }
+            else
+            {
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Espaço</th>
+                            <th>Data</th>
+                            <th>Horário</th>
+                            <th>Localização</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var reserve in Model.NextReservations)
+                        {
+                            <tr>
+                                <td><strong>@reserve.Space.Name</strong></td>
+                                <td>@reserve.Start.ToString("dd/MM/yyyy")</td>
+                                <td>@reserve.Start.ToString("HH:mm") – @reserve.End.ToString("HH:mm")</td>
+                                <td>@reserve.Space.Localization</td>
+                                <td><span class="dashboard-status">@reserve.Status</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </section>
+
+        <section class="dashboard-panel">
+            <div class="dashboard-panel-header">
+                <h2>Disponibilidade</h2>
+            </div>
+
+            <div class="dashboard-ring">
+                <span>@Model.OccupancyRate%</span>
+            </div>
+
+            <div class="dashboard-legend">
+                <div class="dashboard-legend-item"><span class="dot available"></span> @Model.AvailableSpaces disponíveis</div>
+                <div class="dashboard-legend-item"><span class="dot occupied"></span> @Model.OccupiedSpaces ocupados</div>
+            </div>
+        </section>
+    </div>
+
+    <section class="dashboard-panel">
+        <div class="dashboard-panel-header">
+            <h2>Resumo dos próximos 7 dias</h2>
+        </div>
+
+        <div class="dashboard-days">
+            @foreach (var day in Model.NextSevenDays)
+            {
+                var height = Math.Max(12, (int)Math.Round(day.Count * 100.0 / maxDayCount));
+                <div class="day-bar">
+                    <div class="day-bar-value" style="height:@(height)%"></div>
+                    <div class="day-label">@day.Date.ToString("dd")</div>
+                </div>
+            }
+        </div>
+    </section>
+</div>
