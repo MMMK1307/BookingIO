@@ -6,15 +6,16 @@ namespace BookingIO.Common.AuthRoles;
 
 public static class Roles
 {
+    public const string Admin = "Admin";
     public const string UserManager = "UserManager";
     public const string ReservationManager = "ReservationManager";
 
-    public static List<string> All => new() { UserManager, ReservationManager };
+    public static List<string> All => new() { Admin, UserManager, ReservationManager };
 
     public static async Task AddDefaultRoles(RoleManager<IdentityRole<Guid>> roleManager)
     {
-        string[] defaultRoles = { UserManager, ReservationManager };
-        foreach(var role in defaultRoles)
+        string[] defaultRoles = { Admin, UserManager, ReservationManager };
+        foreach (var role in defaultRoles)
         {
             if (await roleManager.RoleExistsAsync(role)) continue;
             var identityRole = new IdentityRole<Guid>(role) { Id = Guid.NewGuid() };
@@ -35,9 +36,24 @@ public static class Roles
                 FullName = "Admin"
             };
             var createResponse = await userManager.CreateAsync(admin, adminOption.Password);
+            if (!createResponse.Succeeded)
+            {
+                throw new InvalidOperationException($"Failed to create default admin account: {string.Join(", ", createResponse.Errors.Select(error => error.Description))}");
+            }
+
             admin = await userManager.FindByEmailAsync("admin@adminadmin.com");
         }
 
-        await userManager.AddToRolesAsync(admin!, All);
+        if (admin is null)
+        {
+            throw new InvalidOperationException("Default admin user could not be resolved after creation.");
+        }
+
+        var rolesToAssign = All
+            .Where(role => !string.IsNullOrWhiteSpace(role))
+            .Distinct()
+            .ToList();
+
+        await userManager.AddToRolesAsync(admin, rolesToAssign);
     }
 }

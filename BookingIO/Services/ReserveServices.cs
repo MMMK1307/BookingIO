@@ -21,19 +21,37 @@ namespace BookingIO.Services
             if (end <= start)
                 return false;
 
-            if (space.Status == SpaceStatus.Blocked)
-                return false;
+            using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
-            if (space.Status == SpaceStatus.Reserved || space.Status == SpaceStatus.InProgress)
-                return false;
+            try
+            {
+                var lockedSpace = await _dbContext.Spaces
+                    .FromSqlRaw("SELECT * FROM Spaces WHERE Id = {0} FOR UPDATE", space.Id)
+                    .SingleOrDefaultAsync();
 
-            if (await HasConflictAsync(space.Id, start, end))
-                return false;
+                if (lockedSpace == null)
+                    return false;
 
-            var reserve = new Reserve(user, space, ReserveStatus.Reserved, start, end);
-            _dbContext.Add(reserve);
-            await _dbContext.SaveChangesAsync();
-            return true;
+                if (lockedSpace.Status == SpaceStatus.Blocked)
+                    return false;
+
+                if (lockedSpace.Status == SpaceStatus.Reserved || lockedSpace.Status == SpaceStatus.InProgress)
+                    return false;
+
+                if (await HasConflictAsync(lockedSpace.Id, start, end))
+                    return false;
+
+                var reserve = new Reserve(user, lockedSpace, ReserveStatus.Reserved, start, end);
+                _dbContext.Add(reserve);
+                await _dbContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
         }
 
         public async Task<List<Reserve>> ListReserveByUser(User user)
