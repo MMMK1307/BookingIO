@@ -1,0 +1,374 @@
+@model BookingIO.Models.ViewModels.AdminSpacesViewModel
+@{
+    ViewData["Title"] = "Espaços";
+    var statusOptions = Enum.GetValues<SpaceStatus>()
+        .Select(status => new
+        {
+            Value = status.ToString(),
+            Label = status switch
+            {
+                SpaceStatus.Available => "Disponível",
+                SpaceStatus.Blocked => "Bloqueado",
+                SpaceStatus.InProgress => "Em andamento",
+                SpaceStatus.Reserved => "Reservado",
+                _ => status.ToString()
+            }
+        })
+        .ToList();
+}
+
+<style>
+    .admin-spaces-page {
+        width: min(1180px, calc(100% - 40px));
+        margin: 48px auto 80px;
+        color: #123b4b;
+    }
+
+    .admin-spaces-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .admin-spaces-header h1 {
+        margin: 0 0 6px;
+        font-size: 34px;
+        font-weight: 800;
+        color: #123b4b;
+    }
+
+    .admin-spaces-header p {
+        margin: 0;
+        color: #66818c;
+        font-size: 15px;
+    }
+
+    .admin-search {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .admin-search input,
+    .admin-search select {
+        height: 44px;
+        padding: 0 14px;
+        border: 1px solid rgba(23, 101, 133, 0.18) !important;
+        border-radius: 10px !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        background: #fff;
+        color: #123b4b;
+    }
+
+    .admin-search button {
+        height: 44px;
+        padding: 0 18px;
+        border: 0;
+        border-radius: 10px;
+        background: #176585;
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .admin-summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .admin-summary-card {
+        background: white;
+        border: 1px solid rgba(23, 101, 133, 0.12);
+        border-radius: 14px;
+        padding: 20px;
+    }
+
+    .admin-summary-card span {
+        display: block;
+        font-size: 13px;
+        color: #66818c;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+
+    .admin-summary-card strong {
+        font-size: 28px;
+        font-family: "Manrope", sans-serif;
+        color: #176585;
+    }
+
+    .admin-table-wrap {
+        background: white;
+        border: 1px solid rgba(23, 101, 133, 0.12);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 16px 18px;
+        text-align: left;
+        border-bottom: 1px solid rgba(23, 101, 133, 0.09);
+        vertical-align: middle;
+    }
+
+    .admin-table th {
+        background: #f7f9fa;
+        color: #66818c;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 700;
+    }
+
+    .admin-space-name {
+        font-weight: 700;
+        color: #123b4b;
+    }
+
+    .admin-space-location {
+        font-size: 13px;
+        color: #66818c;
+        margin-top: 3px;
+    }
+
+    .admin-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 9px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .admin-badge-available,
+    .admin-badge-free {
+        background: #c2e4cb;
+        color: #176585;
+    }
+
+    .admin-badge-blocked,
+    .admin-badge-inactive {
+        background: #eef3f5;
+        color: #66818c;
+    }
+
+    .admin-badge-occupied,
+    .admin-badge-reserved,
+    .admin-badge-inprogress {
+        background: #f7f3cf;
+        color: #176585;
+    }
+
+    .admin-status-form {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin: 0;
+    }
+
+    .admin-status-form select {
+        min-width: 140px;
+        height: 38px;
+        display: block;
+        border: 1px solid rgba(23, 101, 133, 0.18);
+        border-radius: 8px;
+        padding: 0 10px;
+        color: #123b4b;
+        background: white;
+    }
+
+    .admin-action-button {
+        height: 38px;
+        border: 0;
+        border-radius: 8px;
+        padding: 0 12px;
+        background: #176585;
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .admin-empty {
+        padding: 50px 20px;
+        text-align: center;
+        color: #66818c;
+    }
+
+    @@media (max-width: 900px) {
+        .admin-spaces-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .admin-search {
+            width: 100%;
+        }
+
+        .admin-search input,
+        .admin-search select,
+        .admin-search button {
+            width: 100%;
+        }
+
+        .admin-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-table-wrap {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            min-width: 950px;
+        }
+    }
+</style>
+
+<div class="admin-spaces-page">
+    <div class="admin-spaces-header">
+        <div>
+            <h1>Espaços</h1>
+            <p>Gerencie os espaços cadastrados no BookingIO.</p>
+        </div>
+
+        <form method="get" asp-controller="Admin" asp-action="Spaces" class="admin-search">
+            <input type="text" name="search" value="@Model.Search" placeholder="Buscar por nome, tipo ou localização" />
+            <select name="typeId">
+                <option value="">Todos os tipos</option>
+                @foreach (var type in Model.SpaceTypes)
+                {
+                    <option value="@type.Id" selected="@(Model.TypeId == type.Id)">@type.Name</option>
+                }
+            </select>
+            <input type="text" name="localization" value="@Model.Localization" placeholder="Localização" />
+            <button type="submit">Buscar</button>
+        </form>
+    </div>
+
+    <div class="admin-summary">
+        <div class="admin-summary-card">
+            <span>Total de espaços</span>
+            <strong>@Model.Spaces.Count</strong>
+        </div>
+
+        <div class="admin-summary-card">
+            <span>Ocupados agora</span>
+            <strong>@Model.Spaces.Count(x => x.IsOccupiedNow)</strong>
+        </div>
+
+        <div class="admin-summary-card">
+            <span>Reservas futuras</span>
+            <strong>@Model.Spaces.Sum(x => x.UpcomingReservations)</strong>
+        </div>
+    </div>
+
+    <div class="admin-table-wrap">
+        @if (Model.Spaces.Any())
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Espaço</th>
+                        <th>Tipo</th>
+                        <th>Capacidade</th>
+                        <th>Uso atual</th>
+                        <th>Próximas reservas</th>
+                        <th>Status</th>
+                        <th>Alterar status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var space in Model.Spaces)
+                    {
+                        var statusLabel = space.Status switch
+                        {
+                            SpaceStatus.Available => "Disponível",
+                            SpaceStatus.Blocked => "Bloqueado",
+                            SpaceStatus.InProgress => "Em andamento",
+                            SpaceStatus.Reserved => "Reservado",
+                            _ => space.Status.ToString()
+                        };
+
+                        <tr>
+                            <td>
+                                <div class="admin-space-name">@space.Name</div>
+                                <div class="admin-space-location">@space.Localization</div>
+                            </td>
+
+                            <td>@space.TypeName</td>
+
+                            <td>@space.Capacity pessoas</td>
+
+                            <td>
+                                @if (space.IsOccupiedNow)
+                                {
+                                    <span class="admin-badge admin-badge-occupied">Ocupado</span>
+                                }
+                                else
+                                {
+                                    <span class="admin-badge admin-badge-free">Livre</span>
+                                }
+                            </td>
+
+                            <td>@space.UpcomingReservations</td>
+
+                            <td>
+                                @if (space.Status == SpaceStatus.Available)
+                                {
+                                    <span class="admin-badge admin-badge-available">@statusLabel</span>
+                                }
+                                else if (space.Status == SpaceStatus.Blocked)
+                                {
+                                    <span class="admin-badge admin-badge-blocked">@statusLabel</span>
+                                }
+                                else if (space.Status == SpaceStatus.InProgress)
+                                {
+                                    <span class="admin-badge admin-badge-inprogress">@statusLabel</span>
+                                }
+                                else
+                                {
+                                    <span class="admin-badge admin-badge-reserved">@statusLabel</span>
+                                }
+                            </td>
+
+                            <td>
+                                <form method="post" asp-controller="Admin" asp-action="UpdateSpaceStatus" asp-route-id="@space.Id" asp-route-search="@Model.Search" asp-route-typeId="@Model.TypeId" asp-route-localization="@Model.Localization" class="admin-status-form">
+                                    @Html.AntiForgeryToken()
+
+                                    <select name="status">
+                                        @foreach (var option in statusOptions)
+                                        {
+                                            <option value="@option.Value" selected="@(space.Status.ToString() == option.Value)">@option.Label</option>
+                                        }
+                                    </select>
+
+                                    <button type="submit" class="admin-action-button">Salvar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="admin-empty">
+                Nenhum espaço encontrado.
+            </div>
+        }
+    </div>
+</div>

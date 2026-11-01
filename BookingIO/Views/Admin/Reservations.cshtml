@@ -1,0 +1,322 @@
+@model BookingIO.Models.ViewModels.AdminReservationsViewModel
+@{
+    ViewData["Title"] = "Reservas";
+    var availableStatuses = Enum.GetValues<ReserveStatus>()
+        .Select(status => new
+        {
+            Value = status.ToString(),
+            Label = status switch
+            {
+                ReserveStatus.Released => "Liberada",
+                ReserveStatus.Blocked => "Bloqueada",
+                ReserveStatus.Canceled => "Cancelada",
+                ReserveStatus.Rejected => "Rejeitada",
+                ReserveStatus.Reserved => "Reservada",
+                _ => status.ToString()
+            }
+        })
+        .ToList();
+}
+
+<style>
+    .admin-reservations-page {
+        width: min(1180px, calc(100% - 40px));
+        margin: 48px auto 80px;
+        color: #123b4b;
+    }
+
+    .admin-reservations-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .admin-reservations-header h1 {
+        margin: 0 0 6px;
+        font-size: 34px;
+        font-weight: 800;
+        color: #123b4b;
+    }
+
+    .admin-reservations-header p {
+        margin: 0;
+        color: #66818c;
+    }
+
+    .admin-search {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .admin-search input,
+    .admin-search select {
+        height: 44px;
+        padding: 0 14px;
+        border: 1px solid rgba(23, 101, 133, 0.18) !important;
+        border-radius: 10px !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        background: #fff;
+        color: #123b4b;
+    }
+
+    .admin-search button {
+        height: 44px;
+        padding: 0 18px;
+        border: 0;
+        border-radius: 10px;
+        background: #176585;
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .admin-table-wrap {
+        background: white;
+        border: 1px solid rgba(23, 101, 133, 0.12);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 16px 18px;
+        text-align: left;
+        border-bottom: 1px solid rgba(23, 101, 133, 0.09);
+        vertical-align: middle;
+    }
+
+    .admin-table th {
+        background: #f7f9fa;
+        color: #66818c;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 700;
+    }
+
+    .admin-user-name,
+    .admin-space-name {
+        font-weight: 700;
+        color: #123b4b;
+    }
+
+    .admin-meta {
+        display: block;
+        margin-top: 4px;
+        color: #66818c;
+        font-size: 13px;
+    }
+
+    .admin-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 9px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .admin-badge-reserved,
+    .admin-badge-released {
+        background: #c2e4cb;
+        color: #176585;
+    }
+
+    .admin-badge-blocked,
+    .admin-badge-rejected {
+        background: #eef3f5;
+        color: #66818c;
+    }
+
+    .admin-badge-canceled {
+        background: #ffe9e9;
+        color: #a13a3a;
+    }
+
+    .admin-status-form {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin: 0;
+    }
+
+    .admin-status-form select {
+        min-width: 140px;
+        height: 38px;
+        display: block;
+        border: 1px solid rgba(23, 101, 133, 0.18);
+        border-radius: 8px;
+        padding: 0 10px;
+        color: #123b4b;
+        background: white;
+    }
+
+    .admin-action-button {
+        height: 38px;
+        border: 0;
+        border-radius: 8px;
+        padding: 0 12px;
+        background: #176585;
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .admin-empty {
+        padding: 50px 20px;
+        text-align: center;
+        color: #66818c;
+    }
+
+    @@media (max-width: 900px) {
+        .admin-reservations-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .admin-search {
+            width: 100%;
+        }
+
+        .admin-search input,
+        .admin-search select,
+        .admin-search button {
+            width: 100%;
+        }
+
+        .admin-table-wrap {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            min-width: 980px;
+        }
+    }
+</style>
+
+<div class="admin-reservations-page">
+    <div class="admin-reservations-header">
+        <div>
+            <h1>Reservas</h1>
+            <p>Gerencie as reservas e o status das solicitações.</p>
+        </div>
+
+        <form method="get" asp-controller="Admin" asp-action="Reservations" class="admin-search">
+            <input type="text" name="userSearch" value="@Model.UserSearch" placeholder="Pesquisar usuário" />
+            <input type="text" name="spaceSearch" value="@Model.SpaceSearch" placeholder="Pesquisar espaço" />
+            <select name="status">
+                <option value="">Todos os status</option>
+                @foreach (var option in availableStatuses)
+                {
+                    <option value="@option.Value" selected="@(Model.Status.Equals(option.Value, StringComparison.OrdinalIgnoreCase))">@option.Label</option>
+                }
+            </select>
+            <button type="submit">Buscar</button>
+        </form>
+    </div>
+
+    <div class="admin-table-wrap">
+        @if (Model.Reservations.Any())
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Usuário</th>
+                        <th>Espaço</th>
+                        <th>Período</th>
+                        <th>Status</th>
+                        <th>Alterar status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var reservation in Model.Reservations)
+                    {
+                        var currentStatus = Enum.TryParse<ReserveStatus>(reservation.Status, true, out var parsedStatus)
+                            ? parsedStatus
+                            : ReserveStatus.Reserved;
+
+                        var statusLabel = currentStatus switch
+                        {
+                            ReserveStatus.Released => "Liberada",
+                            ReserveStatus.Blocked => "Bloqueada",
+                            ReserveStatus.Canceled => "Cancelada",
+                            ReserveStatus.Rejected => "Rejeitada",
+                            ReserveStatus.Reserved => "Reservada",
+                            _ => reservation.Status
+                        };
+
+                        <tr>
+                            <td>
+                                <span class="admin-user-name">@reservation.UserName</span>
+                                <span class="admin-meta">@reservation.UserEmail</span>
+                            </td>
+
+                            <td>
+                                <span class="admin-space-name">@reservation.SpaceName</span>
+                                <span class="admin-meta">@reservation.SpaceType · @reservation.SpaceLocalization</span>
+                            </td>
+
+                            <td>
+                                <div>@reservation.Start.ToString("dd/MM/yyyy")</div>
+                                <span class="admin-meta">@reservation.Start.ToString("HH:mm") até @reservation.End.ToString("HH:mm")</span>
+                            </td>
+
+                            <td>
+                                @if (currentStatus == ReserveStatus.Canceled)
+                                {
+                                    <span class="admin-badge admin-badge-canceled">@statusLabel</span>
+                                }
+                                else if (currentStatus == ReserveStatus.Rejected)
+                                {
+                                    <span class="admin-badge admin-badge-rejected">@statusLabel</span>
+                                }
+                                else if (currentStatus == ReserveStatus.Blocked)
+                                {
+                                    <span class="admin-badge admin-badge-blocked">@statusLabel</span>
+                                }
+                                else if (currentStatus == ReserveStatus.Released)
+                                {
+                                    <span class="admin-badge admin-badge-released">@statusLabel</span>
+                                }
+                                else
+                                {
+                                    <span class="admin-badge admin-badge-reserved">@statusLabel</span>
+                                }
+                            </td>
+
+                            <td>
+                                <form method="post" asp-controller="Admin" asp-action="UpdateReservationStatus" asp-route-id="@reservation.Id" asp-route-userSearch="@Model.UserSearch" asp-route-spaceSearch="@Model.SpaceSearch" asp-route-statusFilter="@Model.Status" class="admin-status-form">
+                                    @Html.AntiForgeryToken()
+                                    <select name="status">
+                                        @foreach (var option in availableStatuses)
+                                        {
+                                            <option value="@option.Value" selected="@(reservation.Status.Equals(option.Value, StringComparison.OrdinalIgnoreCase))">@option.Label</option>
+                                        }
+                                    </select>
+                                    <button type="submit" class="admin-action-button">Salvar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="admin-empty">
+                Nenhuma reserva encontrada.
+            </div>
+        }
+    </div>
+</div>
