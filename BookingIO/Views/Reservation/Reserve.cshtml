@@ -49,6 +49,10 @@
             margin-top: 1em;
         }
 
+        h3 {
+            margin-top: 0;
+        }
+
         .reservation-list-container {
             display: flex;
             flex-wrap: wrap;
@@ -58,6 +62,11 @@
                 padding: 1em;
                 border: var(--ink) solid 1px;
                 border-radius: 5px;
+
+                .r-title {
+                    font-size: 1.2rem;
+                    font-weight: bold;
+                }
             }
         }
 
@@ -123,11 +132,11 @@
                     <input type="hidden" value="@Model.Space.Id" id="SpaceId" />
                     <div>
                         <label for="Start">Início: </label>
-                        <input type="datetime-local" id="Start" name="Start" min="@today" />
+                        <input type="datetime-local" id="Start" name="Start" min="@today" step="300"/>
                     </div>
                     <div>
                         <label for="End">Fim: </label>
-                        <input type="datetime-local" id="End" name="End" />
+                        <input type="datetime-local" id="End" name="End" step="300"/>
                     </div>
                     <div>
                         <button type="submit" class="booking-login-button">Reservar</button>
@@ -135,13 +144,18 @@
                 </form>
             </div>
             <div class="middle-reservation">
-                <h4>Reservas: </h4>
+                <h3>Reservas: </h3>
                 <div class="reservation-list-container">
+                    @if(Model.Reservations.Count <= 0)
+                    {
+                        <h5>Nenhuma Reserva</h5>
+                    }
+
                     @foreach(var reservation in Model.Reservations)
                     {
                         <div class="reservation-card">
-                            <p>@reservation.User.FullName | @reservation.Status</p>
-                            <small>@reservation.Start até @reservation.End</small>
+                            <div class="r-title">@reservation.User.FullName | @reservation.Status</div>
+                            <p>@reservation.Start até @reservation.End</p>
                         </div>
                     }
                 </div>
@@ -150,22 +164,7 @@
         <div class="weather-container">
             <div id="weather-info">
                 <div class="header">
-                    Previsão Curitiba - Paraná
-                </div>
-                <div class="weather-cards">
-                    <div class="weather-card">
-                        <div>
-                            <p class="t-date">25/02/2025</p>
-                            <p>Temp: <span class="t-min">20°</span> | <span class="t-max">29°</span></p>
-                            <p>Chuva(%): <span class="t-rain">50%</span></p>
-                        </div>
-                        <div>
-                            <p class="t-date">Ensolarado</p>
-                            <div class="weather-img-container">
-                                <img src="https://cdn.weatherapi.com/weather/64x64/day/113.png"/>
-                            </div>
-                        </div>
-                    </div>
+                    Carregando Previsão...
                 </div>
             </div>
         </div>
@@ -238,5 +237,5 @@
         });
     }
 
-    //loadWeather('@Model.Space.Localization');
+    loadWeather('@Model.Space.Localization');
 </script>
