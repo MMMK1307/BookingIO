@@ -16,7 +16,7 @@ public class WeatherService
         _weatherOption = options.Value;
     }
 
-    private string _url(string path) => $"https://api.weatherapi.com/v1/{path}?key={_weatherOption.Key}";
+    private string _url(string path) => $"https://api.weatherapi.com/v1/{path}?key={_weatherOption.Key}&lang=pt";
 
     public async Task<WeatherCurrentRequest?> GetCurrentWeather(string q)
     {

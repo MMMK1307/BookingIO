@@ -325,7 +325,7 @@
         <section class="dashboard-panel">
             <div class="dashboard-panel-header">
                 <h2>Próximas reservas</h2>
-                <a class="dashboard-link" href="/Reserve">Ver todas →</a>
+                <a class="dashboard-link" asp-controller="Admin" asp-action="Reservations">Ver todas →</a>
             </div>
 
             @if (Model.NextReservations.Count == 0)

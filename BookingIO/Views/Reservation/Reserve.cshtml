@@ -1,0 +1,242 @@
+﻿@model SpaceReservationModel
+@{
+    string today = DateTime.Today.ToString("yyyy-MM-dd");
+}
+<style>
+    .reservation-container {
+        padding-top: 2em;
+        margin: auto;
+        width: 90%;
+    }
+
+    .space-details {
+        width: 100%;
+        background: #fffefa;
+        padding: 2em;
+        border-radius: 10px;
+
+        h3 {
+            margin-top: 0;
+        }
+    }
+
+    .reserve-form-container {
+        padding: 2em;
+        border-radius: 10px;
+        background: #fffefa;
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr 0.5fr;
+            grid-gap: 1em;
+
+            button {
+                width: 100%;
+            }
+        }
+        h3 {
+            margin-top: 0;
+        }
+    }
+
+
+    .middle-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-gap: 1em;
+
+        > div {
+            margin-top: 1em;
+        }
+
+        .reservation-list-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2em;
+
+            .reservation-card {
+                padding: 1em;
+                border: var(--ink) solid 1px;
+                border-radius: 5px;
+            }
+        }
+
+        .middle-reservation {
+            padding: 2em;
+            border-radius: 10px;
+            margin-top: 1em;
+            background: #fffefa;
+        }
+
+        .weather-container {
+            padding: 2em;
+            background: #fffefa;
+            border-radius: 10px;
+        }
+    }
+
+    #weather-info {
+        .header {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .weather-card {
+            padding: 1em;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            border: var(--ink) solid 1px;
+            border-radius: 5px;
+            margin-top: 1em;
+        }
+        .t-date {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .t-min {
+            color: deepskyblue;
+        }
+        .t-max {
+            color: red;
+        }
+        .t-rain {
+            color: blue;
+        }
+        .weather-img-container {
+            display: flex;
+            justify-content: end;
+        }
+    }
+</style>
+
+<div class="reservation-container">
+    <div class="space-details">
+        <h3>Espaço: @Model.Space.Name | @Model.Space.Type.Name</h3>
+        <h4>Status: @Model.Space.Status - Capacidade: @Model.Space.Capacity</h4>
+        <p>@Model.Space.Description</p>
+    </div>
+    <div class="middle-container">
+        <div>
+            <div class="reserve-form-container">
+                <h3>Nova Reserva</h3>
+                <form id="reservation-form">
+                    <input type="hidden" value="@Model.Space.Id" id="SpaceId" />
+                    <div>
+                        <label for="Start">Início: </label>
+                        <input type="datetime-local" id="Start" name="Start" min="@today" />
+                    </div>
+                    <div>
+                        <label for="End">Fim: </label>
+                        <input type="datetime-local" id="End" name="End" />
+                    </div>
+                    <div>
+                        <button type="submit" class="booking-login-button">Reservar</button>
+                    </div>
+                </form>
+            </div>
+            <div class="middle-reservation">
+                <h4>Reservas: </h4>
+                <div class="reservation-list-container">
+                    @foreach(var reservation in Model.Reservations)
+                    {
+                        <div class="reservation-card">
+                            <p>@reservation.User.FullName | @reservation.Status</p>
+                            <small>@reservation.Start até @reservation.End</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="weather-container">
+            <div id="weather-info">
+                <div class="header">
+                    Previsão Curitiba - Paraná
+                </div>
+                <div class="weather-cards">
+                    <div class="weather-card">
+                        <div>
+                            <p class="t-date">25/02/2025</p>
+                            <p>Temp: <span class="t-min">20°</span> | <span class="t-max">29°</span></p>
+                            <p>Chuva(%): <span class="t-rain">50%</span></p>
+                        </div>
+                        <div>
+                            <p class="t-date">Ensolarado</p>
+                            <div class="weather-img-container">
+                                <img src="https://cdn.weatherapi.com/weather/64x64/day/113.png"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const reservationForm = $('#reservation-form');
+
+    reservationForm.on('submit', (e) => {
+        e.preventDefault();
+        const requestData = reservationForm.serialize()
+        $.post("/Reservation/@Model.Space.Id/Reserve", requestData).done(() => {
+            location.reload();
+        }).fail(() => {
+            NotifyError("Não foi possível Reservar Espaço");
+        });
+    });
+
+    function loadWeather(loc) {
+        $.get(`/Weather/Forecast?location=${loc}`).done((weatherInfo) => {
+            console.log(weatherInfo);
+            const forecast = weatherInfo.forecast;
+            const forecastDays = forecast.forecastday;
+            const locInfo = weatherInfo.location;
+
+            let htmlCards = `
+            `;
+
+            for (let i = 0; i < forecastDays.length; i++) {
+                const forDay = forecastDays[i].day;
+                const forDate = new Date(forecastDays[i].date);
+
+                console.log(forDay, forDate);
+
+                htmlCards += `
+                    <div class="weather-card">
+                        <div>
+                            <p class="t-date">${forDate.toLocaleDateString()}</p>
+                            <p>Temp: <span class="t-min">${forDay.mintemp_c}°</span> | <span class="t-max">${forDay.maxtemp_c}°</span></p>
+                            <p>Chuva(%): <span class="t-rain">${forDay.daily_chance_of_rain}%</span></p>
+                        </div>
+                        <div>
+                            <p class="t-date">${forDay.condition.text}</p>
+                            <div class="weather-img-container">
+                                <img src="https://${forDay.condition.icon}"/>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            console.log(htmlCards);
+
+            const htmlInfo = `
+            <div id="weather-info">
+                <div class="header">
+                    Previsão ${locInfo.name} - ${locInfo.region}
+                </div>
+                <div class="weather-cards">
+                    ${htmlCards}
+                </div>
+            </div>
+            `;
+
+            $('#weather-info').html(htmlInfo);
+
+        }).fail(() => {
+            NotifyAlert("Falha em Carregar Previsão do Tempo");
+        });
+    }
+
+    //loadWeather('@Model.Space.Localization');
+</script>

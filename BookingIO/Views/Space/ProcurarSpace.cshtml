@@ -101,9 +101,10 @@
         <p>Encontre o ambiente ideal para suas atividades e reuniões.</p>
     </div>
 
-    @if(User.IsInRole(Roles.Admin))
+    @if(User.IsInRole(Roles.Admin) || User.IsInRole(Roles.ReservationManager))
     {
         <div class="btn-container">
+            <a asp-action="Reservations" asp-controller="Admin" class="booking-login-button">Reservas</a>
             <a asp-action="Create" asp-controller="SpaceType" class="booking-login-button">Novo Tipo Espaço</a>
             <a asp-action="Register" asp-controller="Space" class="booking-login-button">Novo Espaço</a>
         </div>
@@ -210,7 +211,7 @@
                                     {
                                         <a asp-action="Edit" asp-controller="Space" asp-route-spaceId="@espaco.Id" class="btn waves-effect waves-light">Editar</a>
                                     }
-                                    <a asp-action="Reserve" asp-controller="Space" asp-route-spaceId="@espaco.Id" class="btn waves-effect waves-light">Reservar</a>
+                                    <a asp-action="Reserve" asp-controller="Reservation" asp-route-spaceId="@espaco.Id" class="btn waves-effect waves-light">Reservar</a>
                                 </td>
                             </tr>
                         }

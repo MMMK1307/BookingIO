@@ -32,17 +32,14 @@ namespace BookingIO.Services
                 if (lockedSpace == null)
                     return false;
 
-                if (lockedSpace.Status == SpaceStatus.Blocked)
-                    return false;
-
-                if (lockedSpace.Status == SpaceStatus.Reserved || lockedSpace.Status == SpaceStatus.Destroyed)
+                if (lockedSpace.Status == SpaceStatus.Reserved || lockedSpace.Status == SpaceStatus.Destroyed || lockedSpace.Status == SpaceStatus.Blocked)
                     return false;
 
                 if (await HasConflictAsync(lockedSpace.Id, start, end))
                     return false;
 
                 var reserve = new Reserve(user, lockedSpace, ReserveStatus.Reserved, start, end);
-                _dbContext.Add(reserve);
+                await _dbContext.AddAsync(reserve);
                 await _dbContext.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return true;
@@ -63,6 +60,15 @@ namespace BookingIO.Services
                 .Include(reserve => reserve.Space)
                 .Include(reserve => reserve.User)
                 .Where(reserve => reserve.User != null && reserve.User.Id == user.Id)
+                .ToListAsync();
+        }
+
+        public async Task<List<Reserve>> ListBySpace(Space space)
+        {
+            return await _dbContext.Reserves
+                .Include(r => r.Space)
+                .Include(r => r.User)
+                .Where(r => r.Space == space)
                 .ToListAsync();
         }
 
@@ -158,12 +164,9 @@ namespace BookingIO.Services
 
             return await _dbContext.Reserves
                 .Where(reserve => reserve.Space != null && reserve.Space.Id == spaceId)
-                .Where(reserve => !excludeReserveId.HasValue || reserve.Id != excludeReserveId.Value)
-                .Where(reserve => !string.Equals(reserve.Status, ReserveStatus.Canceled.ToString(), StringComparison.OrdinalIgnoreCase))
-                .Where(reserve => !string.Equals(reserve.Status, "Cancelada", StringComparison.OrdinalIgnoreCase))
-                .Where(reserve => !string.Equals(reserve.Status, ReserveStatus.Rejected.ToString(), StringComparison.OrdinalIgnoreCase))
-                .Where(reserve => !string.Equals(reserve.Status, "Rejeitada", StringComparison.OrdinalIgnoreCase))
-                .Where(reserve => reserve.Start < end && reserve.End > start)
+                .Where(reserve => !excludeReserveId.HasValue || reserve.Id != excludeReserveId)
+                .Where(reserve => reserve.Status == ReserveStatus.Reserved.ToString())
+                .Where(reserve => (start >= reserve.Start && start < reserve.End) || (end > reserve.Start && end <= reserve.End))
                 .AnyAsync();
         }
 

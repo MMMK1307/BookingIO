@@ -44,9 +44,10 @@ public record WeatherForecastDayData(
     [property: JsonPropertyName("avgtemp_c")]
     float AvgTemp,
     WeatherCondition Condition,
-    int DailyChanceOfRain,
     [property: JsonPropertyName("maxwind_kph")]
-    float WindSpeed
+    float WindSpeed,
+    [property: JsonPropertyName("daily_chance_of_rain")]
+    float ChanceOfRain
 );
 
 public record WeatherForecastDay(
